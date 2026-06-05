@@ -77,6 +77,13 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --output examples/square-pyramid.html
 ```
 
+Preview the generated pages:
+
+- [Square pyramid geometry explainer](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
+- [Incline friction simulation](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
+- [Projectile motion animation](https://wesley442.github.io/interactive-edu-skills/examples/projectile-motion.html)
+- [Circular motion simulation](https://wesley442.github.io/interactive-edu-skills/examples/circular-motion.html)
+
 ## Roadmap
 
 - More mechanics templates: pulley systems, spring energy, collisions.

@@ -77,12 +77,12 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --output examples/square-pyramid.html
 ```
 
-已生成的示例页面：
+在线预览示例页面效果：
 
-- [examples/square-pyramid.html](examples/square-pyramid.html)
-- [examples/incline-friction.html](examples/incline-friction.html)
-- [examples/projectile-motion.html](examples/projectile-motion.html)
-- [examples/circular-motion.html](examples/circular-motion.html)
+- [正四棱锥几何讲解页](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
+- [斜面摩擦力互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
+- [平抛运动动画](https://wesley442.github.io/interactive-edu-skills/examples/projectile-motion.html)
+- [圆周运动互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/circular-motion.html)
 
 ## 路线图
 
