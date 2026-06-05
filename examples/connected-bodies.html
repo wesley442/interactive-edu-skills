@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>连接体互动模拟</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #111827;
+      --panel: #1c2434;
+      --card: rgba(255,255,255,0.07);
+      --line: rgba(255,255,255,0.12);
+      --text: #e8edf6;
+      --muted: #9aa7b8;
+      --blue: #64b5f6;
+      --green: #66bb6a;
+      --red: #ef5350;
+      --orange: #ffa726;
+      --purple: #ce93d8;
+      --cyan: #26c6da;
+      --gold: #ffd54f;
+    }
+    body {
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 15% 15%, rgba(100,181,246,.16), transparent 30%),
+                  radial-gradient(circle at 90% 85%, rgba(102,187,106,.12), transparent 34%),
+                  linear-gradient(135deg, #151827 0%, #17213a 54%, #0e3555 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
+    .header {
+      padding: 14px 22px 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.045);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: linear-gradient(135deg, #1565c0, #7c5cfc);
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: .5px;
+    }
+    h1 { font-size: 20px; letter-spacing: .5px; color: var(--text); }
+    .subtitle { color: var(--muted); font-size: 13px; margin-left: auto; }
+    .main-layout { flex: 1; display: flex; min-height: 0; }
+    .left-panel {
+      width: 40%;
+      min-width: 390px;
+      max-width: 540px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-right: 1px solid var(--line);
+    }
+    .right-panel {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .left-panel::-webkit-scrollbar, .right-panel::-webkit-scrollbar { width: 5px; }
+    .left-panel::-webkit-scrollbar-thumb, .right-panel::-webkit-scrollbar-thumb { background: rgba(100,181,246,.4); border-radius: 4px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.23);
+      backdrop-filter: blur(10px);
+    }
+    .card-title {
+      font-size: 15px;
+      color: var(--blue);
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card-title::before {
+      content: "";
+      width: 4px;
+      height: 16px;
+      background: var(--blue);
+      border-radius: 2px;
+      display: inline-block;
+    }
+    .problem-text, .note { color: #cbd5e1; line-height: 1.75; font-size: 13px; }
+    .problem-text strong { color: white; }
+    .slider-group { display: flex; flex-direction: column; gap: 11px; }
+    .slider-item { display: flex; flex-direction: column; gap: 5px; }
+    .slider-label { display: flex; justify-content: space-between; color: #b8c4d6; font-size: 13px; }
+    .slider-label span:last-child { color: white; font-weight: 800; font-variant-numeric: tabular-nums; }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,.16);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 9px rgba(100,181,246,.65);
+    }
+    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .result-item {
+      background: rgba(255,255,255,.055);
+      border-left: 3px solid var(--blue);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+    .result-label { color: var(--muted); font-size: 11px; margin-bottom: 3px; }
+    .result-value { color: white; font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .status-box {
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: .5px;
+      border: 2px solid var(--green);
+      color: var(--green);
+      background: rgba(102,187,106,.15);
+    }
+    .status-warning { border-color: var(--orange); color: var(--orange); background: rgba(255,167,38,.14); }
+    .tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+    .tab-btn {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 6px 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.05);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+    }
+    .tab-btn.active { color: var(--blue); border-color: var(--blue); background: rgba(100,181,246,.18); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .formula-steps { display: flex; flex-direction: column; gap: 8px; }
+    .step {
+      background: rgba(255,255,255,.045);
+      border-left: 3px solid var(--blue);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #d9e2f1;
+      line-height: 1.65;
+      font-size: 13px;
+    }
+    .warning-item {
+      background: rgba(255,167,38,.10);
+      border: 1px solid rgba(255,167,38,.28);
+      color: #ffcc80;
+      border-radius: 8px;
+      padding: 9px 12px;
+      line-height: 1.6;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .canvas-wrapper {
+      flex: 1;
+      min-height: 430px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,.32);
+      overflow: hidden;
+      position: relative;
+    }
+    canvas { width: 100%; height: 100%; display: block; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 15px;
+      color: white;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 2px 8px rgba(25,118,210,.35);
+    }
+    .btn-secondary { background: rgba(255,255,255,.10); color: var(--text); border: 1px solid var(--line); box-shadow: none; }
+    .btn-warning { background: linear-gradient(135deg, #e65100, #f57c00); }
+    .variants-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .variant-item {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 10px;
+      color: #c8d3e0;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .variant-item strong { display: block; color: var(--blue); margin-bottom: 4px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .data-table th { color: var(--blue); background: rgba(100,181,246,.18); padding: 6px 8px; }
+    .data-table td { color: #d1d9e6; padding: 5px 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,.06); }
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      .main-layout { flex-direction: column; }
+      .left-panel { width: 100%; max-width: none; min-width: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .right-panel { min-height: 560px; }
+      .variants-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="header"><div class="badge">高中物理</div><h1>连接体 · 整体法与隔离法</h1><div class="subtitle">加速度 · 绳子拉力 · 摩擦力</div></div>
+    <div class="main-layout"><aside class="left-panel">
+      <div class="card"><div class="card-title">题目描述</div><div class="problem-text">水平面上两个物块 $m_1$、$m_2$ 用轻绳连接，外力 <strong>F</strong> 拉动 $m_1$，两物块与水平面间动摩擦因数均为 <strong>μ</strong>。求系统加速度和绳子拉力。</div></div>
+      <div class="card"><div class="card-title">调节参数</div><div class="slider-group">
+        <div class="slider-item"><div class="slider-label"><span>m₁</span><span id="m1Out"></span></div><input id="m1" type="range" min="0.5" max="6" step="0.1" value="2"></div>
+        <div class="slider-item"><div class="slider-label"><span>m₂</span><span id="m2Out"></span></div><input id="m2" type="range" min="0.5" max="6" step="0.1" value="1.5"></div>
+        <div class="slider-item"><div class="slider-label"><span>外力 F</span><span id="FOut"></span></div><input id="F" type="range" min="0" max="80" step="1" value="35"></div>
+        <div class="slider-item"><div class="slider-label"><span>摩擦因数 μ</span><span id="muOut"></span></div><input id="mu" type="range" min="0" max="0.8" step="0.01" value="0.15"></div>
+      </div></div>
+      <div class="card"><div class="card-title">实时计算结果</div><div class="results-grid"><div class="result-item"><div class="result-label">系统加速度 a</div><div class="result-value" id="resA"></div></div><div class="result-item"><div class="result-label">绳子拉力 T</div><div class="result-value" id="resT"></div></div><div class="result-item"><div class="result-label">总摩擦力</div><div class="result-value" id="resFric"></div></div><div class="result-item"><div class="result-label">净外力</div><div class="result-value" id="resNet"></div></div></div></div>
+      <div class="card"><div class="card-title">运动状态</div><div class="status-box" id="statusBox"></div></div>
+      <div class="card"><div class="tabs"><button class="tab-btn active" onclick="switchTab('overall')">整体法</button><button class="tab-btn" onclick="switchTab('isolate')">隔离法</button><button class="tab-btn" onclick="switchTab('warnings')">易错点</button></div>
+        <div class="tab-content active" id="tab-overall"><div class="step">整体看 $m_1+m_2$：$F-\mu(m_1+m_2)g=(m_1+m_2)a$。</div></div>
+        <div class="tab-content" id="tab-isolate"><div class="step">隔离 $m_2$：$T-\mu m_2g=m_2a$，所以 $T=m_2a+\mu m_2g$。</div></div>
+        <div class="tab-content" id="tab-warnings"><div class="warning-item">绳子拉力是内力，整体法列系统方程时不出现。</div><div class="warning-item">如果外力不大于最大摩擦阈值，系统可能不动，本模板用动摩擦模型给出高中常见运动版本。</div></div>
+      </div>
+    </aside><section class="right-panel"><div class="controls"><button class="btn" id="playPause">暂停动画</button><button class="btn btn-secondary" id="resetMotion">重置</button></div><div class="canvas-wrapper"><canvas id="mainCanvas"></canvas></div>
+      <div class="card"><div class="card-title">变式与课堂提问</div><div class="variants-grid"><div class="variant-item"><strong>变式 1：只改变 m₂</strong>观察拉力 T 如何变化。</div><div class="variant-item"><strong>变式 2：无摩擦</strong>令 μ=0，比对 $a=F/(m_1+m_2)$。</div><div class="variant-item"><strong>课堂提问</strong>为什么整体法不能直接求绳子拉力？</div></div></div>
+    </section></div>
+  </main>
+  <script>
+const st={playing:true,last:0,pos:0,vel:0};const g=10,canvas=document.getElementById('mainCanvas'),ctx=canvas.getContext('2d');
+for(const id of ['m1','m2','F','mu'])document.getElementById(id).addEventListener('input',()=>{st.pos=0;st.vel=0;draw();});
+playPause.onclick=()=>{st.playing=!st.playing;playPause.textContent=st.playing?'暂停动画':'播放动画'};resetMotion.onclick=()=>{st.pos=0;st.vel=0;draw()};
+function values(){const m1=+document.getElementById('m1').value,m2=+document.getElementById('m2').value,F=+document.getElementById('F').value,mu=+document.getElementById('mu').value;const fr=mu*(m1+m2)*g,net=F-fr,a=Math.max(0,net/(m1+m2)),T=m2*a+mu*m2*g;return{m1,m2,F,mu,fr,net,a,T}}
+function resize(){const dpr=window.devicePixelRatio||1,w=canvas.parentElement.clientWidth,h=canvas.parentElement.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);return{w,h}}
+function arrow(x1,y1,x2,y2,c,l){const ang=Math.atan2(y2-y1,x2-x1);ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-12*Math.cos(ang-.45),y2-12*Math.sin(ang-.45));ctx.lineTo(x2-12*Math.cos(ang+.45),y2-12*Math.sin(ang+.45));ctx.fill();ctx.font='bold 13px Segoe UI';ctx.fillText(l,x2+6,y2-6)}
+function draw(){const v=values();m1Out.textContent=`${v.m1.toFixed(1)} kg`;m2Out.textContent=`${v.m2.toFixed(1)} kg`;FOut.textContent=`${v.F.toFixed(0)} N`;muOut.textContent=v.mu.toFixed(2);resA.textContent=`${v.a.toFixed(2)} m/s²`;resT.textContent=`${v.T.toFixed(2)} N`;resFric.textContent=`${v.fr.toFixed(1)} N`;resNet.textContent=`${v.net.toFixed(1)} N`;statusBox.textContent=v.net>0?`系统向右加速，a=${v.a.toFixed(2)} m/s²`:'外力不足，按静止/临界处理';
+const {w,h}=resize();ctx.clearRect(0,0,w,h);ctx.strokeStyle='rgba(255,255,255,.08)';for(let x=0;x<w;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}const y=h*.58,x=100+(st.pos%(Math.max(260,w-360)));ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(40,y+55,w-80,18);ctx.fillStyle='#4f8ef7';ctx.fillRect(x,y,110,55);ctx.fillStyle='#3ecf8e';ctx.fillRect(x+170,y+8,92,47);ctx.strokeStyle='#f5c842';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x+110,y+28);ctx.lineTo(x+170,y+31);ctx.stroke();ctx.fillStyle='white';ctx.font='bold 16px Segoe UI';ctx.fillText('m₁',x+44,y+34);ctx.fillText('m₂',x+204,y+38);arrow(x+110,y-20,x+110+Math.min(140,v.F*2),y-20,'#ef5350','F');arrow(x+170,y+84,x+118,y+84,'#ffa726','f₁');arrow(x+260,y+84,x+216,y+84,'#ffa726','f₂');arrow(x+145,y+8,x+180,y+8,'#f5c842','T');}
+function animate(now){if(!st.last)st.last=now;const dt=Math.min(.05,(now-st.last)/1000);st.last=now;const v=values();if(st.playing&&v.a>0){st.vel+=v.a*dt*8;st.pos+=st.vel*dt}draw();requestAnimationFrame(animate)}
+function switchTab(name){document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.toggle('active',btn.getAttribute('onclick').includes("'"+name+"'")));document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));if(window.MathJax)MathJax.typesetPromise();}
+draw();requestAnimationFrame(animate);
+</script>
+</body>
+</html>

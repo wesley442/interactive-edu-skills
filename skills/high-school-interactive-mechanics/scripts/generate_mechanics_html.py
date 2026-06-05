@@ -705,7 +705,106 @@ function switchTab(name) {
     return page("圆周运动互动题页", body, script)
 
 
-TEMPLATES = {"incline": incline, "projectile": projectile, "circular": circular}
+def spring_energy() -> str:
+    body = """<div class="header">
+      <div class="badge">高中物理</div><h1>弹簧能量 · 互动模拟</h1><div class="subtitle">胡克定律 · 能量转化 · 可调变量</div>
+    </div>
+    <div class="main-layout">
+      <aside class="left-panel">
+        <div class="card"><div class="card-title">题目描述</div><div class="problem-text">质量为 <strong>m</strong> 的小物块压缩劲度系数为 <strong>k</strong> 的轻弹簧，压缩量为 <strong>x</strong>。释放后忽略摩擦，求最大速度和弹性势能。</div></div>
+        <div class="card"><div class="card-title">调节参数</div><div class="slider-group">
+          <div class="slider-item"><div class="slider-label"><span>劲度系数 k</span><span id="kOut"></span></div><input id="k" type="range" min="50" max="800" step="10" value="300"></div>
+          <div class="slider-item"><div class="slider-label"><span>质量 m</span><span id="mOut"></span></div><input id="m" type="range" min="0.2" max="5" step="0.1" value="1.2"></div>
+          <div class="slider-item"><div class="slider-label"><span>压缩量 x</span><span id="xOut"></span></div><input id="x" type="range" min="0.05" max="0.6" step="0.01" value="0.25"></div>
+        </div></div>
+        <div class="card"><div class="card-title">实时计算结果</div><div class="results-grid">
+          <div class="result-item"><div class="result-label">弹力 F=kx</div><div class="result-value" id="resF"></div></div>
+          <div class="result-item"><div class="result-label">弹性势能 Ep</div><div class="result-value" id="resEp"></div></div>
+          <div class="result-item"><div class="result-label">最大速度 vmax</div><div class="result-value" id="resV"></div></div>
+          <div class="result-item"><div class="result-label">角频率 ω</div><div class="result-value" id="resW"></div></div>
+        </div></div>
+        <div class="card"><div class="card-title">状态提示</div><div class="status-box" id="statusBox"></div></div>
+        <div class="card"><div class="tabs"><button class="tab-btn active" onclick="switchTab('model')">物理模型</button><button class="tab-btn" onclick="switchTab('formula')">公式推导</button><button class="tab-btn" onclick="switchTab('warnings')">易错点</button></div>
+          <div class="tab-content active" id="tab-model"><div class="step">研究对象是小物块与弹簧系统；忽略摩擦时，弹性势能可以完全转化为动能。</div></div>
+          <div class="tab-content" id="tab-formula"><div class="formula-steps"><div class="step">$E_p=\\frac12kx^2$</div><div class="step">$\\frac12kx^2=\\frac12mv_{max}^2 \\Rightarrow v_{max}=x\\sqrt{k/m}$</div><div class="step">$F=kx$，压缩量越大，初始弹力越大。</div></div></div>
+          <div class="tab-content" id="tab-warnings"><div class="warning-item">最大速度出现在弹簧恢复原长处，不是刚释放瞬间。</div><div class="warning-item">弹力随压缩量改变，不应把 F 当作恒力直接用 Fs。</div></div>
+        </div>
+      </aside>
+      <section class="right-panel"><div class="controls"><button class="btn" id="playPause">暂停动画</button><button class="btn btn-secondary" id="resetMotion">重置</button></div><div class="canvas-wrapper"><canvas id="mainCanvas"></canvas></div>
+        <div class="card"><div class="card-title">变式与课堂提问</div><div class="variants-grid"><div class="variant-item"><strong>变式 1：k 加倍</strong>同一压缩量下，势能加倍，最大速度变为 $\\sqrt2$ 倍。</div><div class="variant-item"><strong>变式 2：x 加倍</strong>势能变为 4 倍，最大速度变为 2 倍。</div><div class="variant-item"><strong>课堂提问</strong>为什么刚释放时速度为 0，但加速度最大？</div></div></div>
+      </section>
+    </div>"""
+    script = r"""
+const state={playing:true,last:0,t:0};
+const canvas=document.getElementById('mainCanvas'),ctx=canvas.getContext('2d');
+for(const id of ['k','m','x']) document.getElementById(id).addEventListener('input',()=>{state.t=0;draw();});
+playPause.onclick=()=>{state.playing=!state.playing;playPause.textContent=state.playing?'暂停动画':'播放动画';};
+resetMotion.onclick=()=>{state.t=0;draw();};
+function values(){const k=+document.getElementById('k').value,m=+document.getElementById('m').value,x=+document.getElementById('x').value;return{ k,m,x,F:k*x,Ep:.5*k*x*x,v:x*Math.sqrt(k/m),w:Math.sqrt(k/m)}}
+function resize(){const dpr=window.devicePixelRatio||1,w=canvas.parentElement.clientWidth,h=canvas.parentElement.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);return{w,h};}
+function springPath(x0,y,coils,len,amp){let d=`M${x0} ${y}`;for(let i=0;i<=coils*2;i++){const x=x0+len*(i/(coils*2));const yy=y+(i%2?amp:-amp);d+=` L${x.toFixed(1)} ${yy.toFixed(1)}`;}return d;}
+function draw(){
+ const v=values(); kOut.textContent=`${v.k.toFixed(0)} N/m`; mOut.textContent=`${v.m.toFixed(1)} kg`; xOut.textContent=`${v.x.toFixed(2)} m`;
+ resF.textContent=`${v.F.toFixed(1)} N`; resEp.textContent=`${v.Ep.toFixed(2)} J`; resV.textContent=`${v.v.toFixed(2)} m/s`; resW.textContent=`${v.w.toFixed(2)} rad/s`; statusBox.textContent=`当前弹性势能 ${v.Ep.toFixed(2)} J，可转化为最大动能。`;
+ const {w,h}=resize();ctx.clearRect(0,0,w,h);ctx.strokeStyle='rgba(255,255,255,.08)';for(let x=0;x<w;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ const baseY=h*0.62,wallX=90,eqX=w*0.55,amp=v.x*210;const pos=eqX-amp*Math.cos(state.t*v.w);const springLen=pos-wallX-58;
+ ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(60,baseY-120,30,160);ctx.fillRect(45,baseY+42,w-90,18);
+ const path=springPath(wallX,baseY,9,springLen,18);ctx.strokeStyle='#64b5f6';ctx.lineWidth=4;ctx.stroke(new Path2D(path));
+ ctx.fillStyle='#ffb74d';ctx.shadowColor='#ffb74d';ctx.shadowBlur=16;ctx.fillRect(pos,baseY-34,92,68);ctx.shadowBlur=0;
+ ctx.fillStyle='#9aa7b8';ctx.font='13px Segoe UI';ctx.fillText('平衡位置',eqX,baseY+80);ctx.strokeStyle='rgba(62,207,142,.7)';ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(eqX,baseY-95);ctx.lineTo(eqX,baseY+64);ctx.stroke();ctx.setLineDash([]);
+ const epHeight=Math.max(5,Math.min(150,v.Ep*18));const ke=.5*v.m*Math.pow(amp*v.w*Math.sin(state.t*v.w)/210,2);const keHeight=Math.max(5,Math.min(150,ke*18));
+ ctx.fillStyle='#4f8ef7';ctx.fillRect(w-150,baseY+50-epHeight,42,epHeight);ctx.fillStyle='#3ecf8e';ctx.fillRect(w-92,baseY+50-keHeight,42,keHeight);ctx.fillStyle='#cbd5e1';ctx.fillText('Ep',w-145,baseY+75);ctx.fillText('Ek',w-86,baseY+75);
+}
+function animate(now){if(!state.last)state.last=now;const dt=Math.min(.05,(now-state.last)/1000);state.last=now;if(state.playing)state.t+=dt;draw();requestAnimationFrame(animate)}
+function switchTab(name){document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.toggle('active',btn.getAttribute('onclick').includes("'"+name+"'")));document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));if(window.MathJax)MathJax.typesetPromise();}
+draw();requestAnimationFrame(animate);
+"""
+    return page("弹簧能量互动模拟", body, script)
+
+
+def connected_bodies() -> str:
+    body = """<div class="header"><div class="badge">高中物理</div><h1>连接体 · 整体法与隔离法</h1><div class="subtitle">加速度 · 绳子拉力 · 摩擦力</div></div>
+    <div class="main-layout"><aside class="left-panel">
+      <div class="card"><div class="card-title">题目描述</div><div class="problem-text">水平面上两个物块 $m_1$、$m_2$ 用轻绳连接，外力 <strong>F</strong> 拉动 $m_1$，两物块与水平面间动摩擦因数均为 <strong>μ</strong>。求系统加速度和绳子拉力。</div></div>
+      <div class="card"><div class="card-title">调节参数</div><div class="slider-group">
+        <div class="slider-item"><div class="slider-label"><span>m₁</span><span id="m1Out"></span></div><input id="m1" type="range" min="0.5" max="6" step="0.1" value="2"></div>
+        <div class="slider-item"><div class="slider-label"><span>m₂</span><span id="m2Out"></span></div><input id="m2" type="range" min="0.5" max="6" step="0.1" value="1.5"></div>
+        <div class="slider-item"><div class="slider-label"><span>外力 F</span><span id="FOut"></span></div><input id="F" type="range" min="0" max="80" step="1" value="35"></div>
+        <div class="slider-item"><div class="slider-label"><span>摩擦因数 μ</span><span id="muOut"></span></div><input id="mu" type="range" min="0" max="0.8" step="0.01" value="0.15"></div>
+      </div></div>
+      <div class="card"><div class="card-title">实时计算结果</div><div class="results-grid"><div class="result-item"><div class="result-label">系统加速度 a</div><div class="result-value" id="resA"></div></div><div class="result-item"><div class="result-label">绳子拉力 T</div><div class="result-value" id="resT"></div></div><div class="result-item"><div class="result-label">总摩擦力</div><div class="result-value" id="resFric"></div></div><div class="result-item"><div class="result-label">净外力</div><div class="result-value" id="resNet"></div></div></div></div>
+      <div class="card"><div class="card-title">运动状态</div><div class="status-box" id="statusBox"></div></div>
+      <div class="card"><div class="tabs"><button class="tab-btn active" onclick="switchTab('overall')">整体法</button><button class="tab-btn" onclick="switchTab('isolate')">隔离法</button><button class="tab-btn" onclick="switchTab('warnings')">易错点</button></div>
+        <div class="tab-content active" id="tab-overall"><div class="step">整体看 $m_1+m_2$：$F-\\mu(m_1+m_2)g=(m_1+m_2)a$。</div></div>
+        <div class="tab-content" id="tab-isolate"><div class="step">隔离 $m_2$：$T-\\mu m_2g=m_2a$，所以 $T=m_2a+\\mu m_2g$。</div></div>
+        <div class="tab-content" id="tab-warnings"><div class="warning-item">绳子拉力是内力，整体法列系统方程时不出现。</div><div class="warning-item">如果外力不大于最大摩擦阈值，系统可能不动，本模板用动摩擦模型给出高中常见运动版本。</div></div>
+      </div>
+    </aside><section class="right-panel"><div class="controls"><button class="btn" id="playPause">暂停动画</button><button class="btn btn-secondary" id="resetMotion">重置</button></div><div class="canvas-wrapper"><canvas id="mainCanvas"></canvas></div>
+      <div class="card"><div class="card-title">变式与课堂提问</div><div class="variants-grid"><div class="variant-item"><strong>变式 1：只改变 m₂</strong>观察拉力 T 如何变化。</div><div class="variant-item"><strong>变式 2：无摩擦</strong>令 μ=0，比对 $a=F/(m_1+m_2)$。</div><div class="variant-item"><strong>课堂提问</strong>为什么整体法不能直接求绳子拉力？</div></div></div>
+    </section></div>"""
+    script = r"""
+const st={playing:true,last:0,pos:0,vel:0};const g=10,canvas=document.getElementById('mainCanvas'),ctx=canvas.getContext('2d');
+for(const id of ['m1','m2','F','mu'])document.getElementById(id).addEventListener('input',()=>{st.pos=0;st.vel=0;draw();});
+playPause.onclick=()=>{st.playing=!st.playing;playPause.textContent=st.playing?'暂停动画':'播放动画'};resetMotion.onclick=()=>{st.pos=0;st.vel=0;draw()};
+function values(){const m1=+document.getElementById('m1').value,m2=+document.getElementById('m2').value,F=+document.getElementById('F').value,mu=+document.getElementById('mu').value;const fr=mu*(m1+m2)*g,net=F-fr,a=Math.max(0,net/(m1+m2)),T=m2*a+mu*m2*g;return{m1,m2,F,mu,fr,net,a,T}}
+function resize(){const dpr=window.devicePixelRatio||1,w=canvas.parentElement.clientWidth,h=canvas.parentElement.clientHeight;canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);return{w,h}}
+function arrow(x1,y1,x2,y2,c,l){const ang=Math.atan2(y2-y1,x2-x1);ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-12*Math.cos(ang-.45),y2-12*Math.sin(ang-.45));ctx.lineTo(x2-12*Math.cos(ang+.45),y2-12*Math.sin(ang+.45));ctx.fill();ctx.font='bold 13px Segoe UI';ctx.fillText(l,x2+6,y2-6)}
+function draw(){const v=values();m1Out.textContent=`${v.m1.toFixed(1)} kg`;m2Out.textContent=`${v.m2.toFixed(1)} kg`;FOut.textContent=`${v.F.toFixed(0)} N`;muOut.textContent=v.mu.toFixed(2);resA.textContent=`${v.a.toFixed(2)} m/s²`;resT.textContent=`${v.T.toFixed(2)} N`;resFric.textContent=`${v.fr.toFixed(1)} N`;resNet.textContent=`${v.net.toFixed(1)} N`;statusBox.textContent=v.net>0?`系统向右加速，a=${v.a.toFixed(2)} m/s²`:'外力不足，按静止/临界处理';
+const {w,h}=resize();ctx.clearRect(0,0,w,h);ctx.strokeStyle='rgba(255,255,255,.08)';for(let x=0;x<w;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}const y=h*.58,x=100+(st.pos%(Math.max(260,w-360)));ctx.fillStyle='rgba(255,255,255,.12)';ctx.fillRect(40,y+55,w-80,18);ctx.fillStyle='#4f8ef7';ctx.fillRect(x,y,110,55);ctx.fillStyle='#3ecf8e';ctx.fillRect(x+170,y+8,92,47);ctx.strokeStyle='#f5c842';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(x+110,y+28);ctx.lineTo(x+170,y+31);ctx.stroke();ctx.fillStyle='white';ctx.font='bold 16px Segoe UI';ctx.fillText('m₁',x+44,y+34);ctx.fillText('m₂',x+204,y+38);arrow(x+110,y-20,x+110+Math.min(140,v.F*2),y-20,'#ef5350','F');arrow(x+170,y+84,x+118,y+84,'#ffa726','f₁');arrow(x+260,y+84,x+216,y+84,'#ffa726','f₂');arrow(x+145,y+8,x+180,y+8,'#f5c842','T');}
+function animate(now){if(!st.last)st.last=now;const dt=Math.min(.05,(now-st.last)/1000);st.last=now;const v=values();if(st.playing&&v.a>0){st.vel+=v.a*dt*8;st.pos+=st.vel*dt}draw();requestAnimationFrame(animate)}
+function switchTab(name){document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.toggle('active',btn.getAttribute('onclick').includes("'"+name+"'")));document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id==='tab-'+name));if(window.MathJax)MathJax.typesetPromise();}
+draw();requestAnimationFrame(animate);
+"""
+    return page("连接体互动模拟", body, script)
+
+
+TEMPLATES = {
+    "incline": incline,
+    "projectile": projectile,
+    "circular": circular,
+    "spring-energy": spring_energy,
+    "connected-bodies": connected_bodies,
+}
 
 
 def main() -> None:

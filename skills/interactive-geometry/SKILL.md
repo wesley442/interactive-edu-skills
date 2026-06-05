@@ -73,6 +73,8 @@ Use a clear teacher-like style. Explain why each construction or formula is used
 - Square pyramid line-plane angle.
 - Cube skew-line angle.
 - Cuboid point-to-plane distance.
+- Cube point-to-plane distance.
+- Regular tetrahedron dihedral angle.
 - Plane geometry triangle and circle explainers.
 
 For a runnable local example, use:
@@ -81,7 +83,7 @@ For a runnable local example, use:
 python3 scripts/generate_geometry_html.py --template square-pyramid --output square-pyramid.html
 ```
 
-The square-pyramid template is the canonical quality baseline for geometry HTML output. It uses a dark classroom UI, MathJax, a Three.js 3D scene, draggable rotation, wheel zoom, step-by-step highlighting, 2D labels over 3D geometry, solution tabs, common mistakes, and a variant problem. Match that level for user-facing interactive geometry pages.
+The square-pyramid template is the canonical quality baseline for geometry HTML output. It uses a dark classroom UI, MathJax, a Three.js 3D scene, draggable rotation, wheel zoom, step-by-step highlighting, 2D labels over 3D geometry, solution tabs, common mistakes, and a variant problem. The cube-distance and dihedral-angle templates provide lightweight SVG-based alternatives for deterministic local execution. Match this level for user-facing interactive geometry pages.
 
 ## Generation Rules
 

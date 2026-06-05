@@ -68,22 +68,26 @@ The bundled scripts are intentionally small and dependency-light. They generate 
 
 ```bash
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py \
-  --template incline \
-  --output examples/incline-friction.html
+  --template spring-energy \
+  --output examples/spring-energy.html
 ```
 
 ```bash
 python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
-  --template square-pyramid \
-  --output examples/square-pyramid.html
+  --template cube-distance \
+  --output examples/cube-distance.html
 ```
 
 Preview the reference pages:
 
 - [Square pyramid geometry explainer](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
+- [Cube point-to-plane distance explainer](https://wesley442.github.io/interactive-edu-skills/examples/cube-distance.html)
+- [Regular tetrahedron dihedral angle explainer](https://wesley442.github.io/interactive-edu-skills/examples/dihedral-angle.html)
 - [Incline friction simulation](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
 - [Projectile motion animation](https://wesley442.github.io/interactive-edu-skills/examples/projectile-motion.html)
 - [Circular motion simulation](https://wesley442.github.io/interactive-edu-skills/examples/circular-motion.html)
+- [Spring energy simulation](https://wesley442.github.io/interactive-edu-skills/examples/spring-energy.html)
+- [Connected bodies simulation](https://wesley442.github.io/interactive-edu-skills/examples/connected-bodies.html)
 
 ## Roadmap
 

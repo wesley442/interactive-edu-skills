@@ -68,22 +68,26 @@ Claude-compatible 的打包方式和脚本直用方式见 [docs/installation.md]
 
 ```bash
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py \
-  --template incline \
-  --output examples/incline-friction.html
+  --template spring-energy \
+  --output examples/spring-energy.html
 ```
 
 ```bash
 python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
-  --template square-pyramid \
-  --output examples/square-pyramid.html
+  --template cube-distance \
+  --output examples/cube-distance.html
 ```
 
 在线预览参考页面效果：
 
 - [正四棱锥几何讲解页](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
+- [正方体点到平面距离讲解页](https://wesley442.github.io/interactive-edu-skills/examples/cube-distance.html)
+- [正四面体二面角讲解页](https://wesley442.github.io/interactive-edu-skills/examples/dihedral-angle.html)
 - [斜面摩擦力互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
 - [平抛运动动画](https://wesley442.github.io/interactive-edu-skills/examples/projectile-motion.html)
 - [圆周运动互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/circular-motion.html)
+- [弹簧能量互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/spring-energy.html)
+- [连接体互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/connected-bodies.html)
 
 ## 路线图
 

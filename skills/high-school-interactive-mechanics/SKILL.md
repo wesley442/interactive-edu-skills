@@ -61,7 +61,8 @@ Before generating any problem or HTML, explicitly determine:
 - Incline friction: adjustable mass, angle, friction coefficient, gravity.
 - Projectile motion: adjustable initial velocity, height, gravity.
 - Circular motion: adjustable mass, radius, speed.
-- Connected bodies and springs can be generated as explanations; interactive scripts should be added as templates before claiming deterministic local execution.
+- Spring energy: adjustable spring constant, mass, compression, energy bars.
+- Connected bodies: adjustable masses, external force, friction coefficient, tension.
 
 For a basic runnable reference example, use:
 
@@ -69,7 +70,7 @@ For a basic runnable reference example, use:
 python3 scripts/generate_mechanics_html.py --template incline --output incline-friction.html
 ```
 
-The incline template is the canonical quality baseline for mechanics HTML output. It uses a dark classroom UI, a Canvas scene, `requestAnimationFrame`, adjustable sliders, motion-state detection, force-vector drawing, tabs, history records, and classroom helper actions. For user-facing generated HTML, match that level of interaction and follow the full interactive HTML spec in `references/interactive-html-spec.zh-CN.md`.
+The incline template is the canonical quality baseline for mechanics HTML output. The projectile, circular, spring-energy, and connected-bodies templates follow the same dark classroom UI and Canvas interaction style. For user-facing generated HTML, match that level of interaction and follow the full interactive HTML spec in `references/interactive-html-spec.zh-CN.md`.
 
 ## Physics Rules
 
