@@ -7,6 +7,13 @@ import argparse
 from pathlib import Path
 
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def read_template(name: str) -> str:
+    return (SCRIPT_DIR.parent / "templates" / name).read_text(encoding="utf-8")
+
+
 def page(title: str, body: str, script: str) -> str:
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -100,149 +107,7 @@ def page(title: str, body: str, script: str) -> str:
 
 
 def incline() -> str:
-    body = """<header>
-      <h1>斜面摩擦力互动题页</h1>
-      <div class="subtitle">调节质量、斜面角度和摩擦因数，实时观察受力图、加速度和滑块运动。</div>
-    </header>
-    <section class="grid">
-      <aside class="panel">
-        <h2>题目</h2>
-        <p class="note">质量为 $m$ 的小物块放在倾角为 $\\theta$ 的粗糙斜面上，动摩擦因数为 $\\mu$。若物块沿斜面方向运动，求沿斜面方向的加速度。</p>
-        <label><span class="row"><span>质量 m</span><output id="mOut"></output></span><input id="m" type="range" min="0.5" max="5" step="0.1" value="2"></label>
-        <label><span class="row"><span>角度 θ</span><output id="thetaOut"></output></span><input id="theta" type="range" min="5" max="55" step="1" value="30"></label>
-        <label><span class="row"><span>摩擦因数 μ</span><output id="muOut"></output></span><input id="mu" type="range" min="0" max="0.8" step="0.01" value="0.2"></label>
-        <label><span class="row"><span>重力加速度 g</span><output id="gOut"></output></span><input id="g" type="range" min="9.0" max="10.0" step="0.01" value="9.8"></label>
-        <div class="result" id="answer"></div>
-        <div class="status-pill" id="motionStatus"></div>
-        <p class="note" id="motionReadout"></p>
-        <div class="formula">$$N=mg\\cos\\theta$$ $$f=\\mu N$$ $$a=g(\\sin\\theta-\\mu\\cos\\theta)$$</div>
-      </aside>
-      <section class="panel">
-        <svg id="scene" viewBox="0 0 720 560" role="img" aria-label="Incline force animation">
-          <defs>
-            <marker id="arrowB" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#2457c5"/></marker>
-            <marker id="arrowG" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#1f8a70"/></marker>
-            <marker id="arrowR" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#d63f64"/></marker>
-            <marker id="arrowO" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#ff8b3d"/></marker>
-          </defs>
-          <g id="drawing"></g>
-        </svg>
-        <div class="controls">
-          <button id="playPause">暂停</button>
-          <button id="resetMotion" class="secondary">重置运动</button>
-        </div>
-        <p class="note">蓝色是重力，绿色是支持力，红色是摩擦力，橙色是沿斜面合力方向。滑块位置由加速度随时间更新。</p>
-      </section>
-    </section>"""
-    script = r"""
-const inputIds = ['m','theta','mu','g'];
-const motion = { pos: 0.2, vel: 0, last: 0, playing: true, a: 0, direction: 1, trail: [] };
-for (const id of inputIds) document.getElementById(id).addEventListener('input', () => { resetMotion(false); updateValues(); drawIncline(); });
-document.getElementById('playPause').addEventListener('click', () => {
-  motion.playing = !motion.playing;
-  document.getElementById('playPause').textContent = motion.playing ? '暂停' : '播放';
-  motion.last = performance.now();
-});
-document.getElementById('resetMotion').addEventListener('click', () => resetMotion(true));
-
-function line(x1, y1, x2, y2, color, marker, label) {
-  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="7" stroke-linecap="round" marker-end="url(#${marker})"/><text x="${x2+8}" y="${y2+4}" font-size="22" font-weight="800" fill="${color}">${label}</text>`;
-}
-
-function values() {
-  const m = +document.getElementById('m').value;
-  const theta = +document.getElementById('theta').value;
-  const mu = +document.getElementById('mu').value;
-  const g = +document.getElementById('g').value;
-  const rad = theta * Math.PI / 180;
-  const N = m * g * Math.cos(rad);
-  const f = mu * N;
-  const a = g * (Math.sin(rad) - mu * Math.cos(rad));
-  return { m, theta, mu, g, rad, N, f, a };
-}
-
-function updateValues() {
-  const v = values();
-  motion.a = v.a;
-  motion.direction = Math.sign(v.a || 1);
-  document.getElementById('mOut').textContent = `${v.m.toFixed(1)} kg`;
-  document.getElementById('thetaOut').textContent = `${v.theta.toFixed(0)}°`;
-  document.getElementById('muOut').textContent = v.mu.toFixed(2);
-  document.getElementById('gOut').textContent = `${v.g.toFixed(2)} m/s²`;
-  document.getElementById('answer').textContent = `a = ${v.a.toFixed(2)} m/s²`;
-  document.getElementById('motionReadout').textContent = `动画位移进度：${(motion.pos * 100).toFixed(0)}%，速度比例：${motion.vel.toFixed(2)}`;
-  const statusEl = document.getElementById('motionStatus');
-  statusEl.textContent = Math.abs(v.a) < 0.05 ? '临界状态：加速度约为 0' : (v.a > 0 ? '沿斜面向下加速' : '合力沿斜面向上');
-  statusEl.style.background = Math.abs(v.a) < 0.05 ? '#ff8b3d' : (v.a > 0 ? '#1f8a70' : '#d63f64');
-}
-
-function resetMotion(alsoDraw) {
-  motion.pos = 0.2;
-  motion.vel = 0;
-  motion.last = performance.now();
-  motion.trail = [];
-  if (alsoDraw) drawIncline();
-}
-
-function drawIncline() {
-  const v = values();
-  const baseX = 100, baseY = 440, len = 520, height = Math.tan(v.rad) * len;
-  const topX = baseX + len, topY = baseY - height;
-  const t = Math.max(0.08, Math.min(0.92, motion.pos));
-  const bx = baseX + len * t;
-  const by = baseY - height * t;
-  const nx = Math.sin(v.rad), ny = -Math.cos(v.rad);
-  const upSlopeX = -Math.cos(v.rad), upSlopeY = -Math.sin(v.rad);
-  const alongX = Math.cos(v.rad) * Math.sign(v.a || 1);
-  const alongY = -Math.sin(v.rad) * Math.sign(v.a || 1);
-  const block = `<g transform="translate(${bx} ${by}) rotate(${-v.theta})"><rect x="-42" y="-34" width="84" height="68" rx="12" fill="#fff" stroke="#213043" stroke-width="6"/><circle cx="-24" cy="45" r="8" fill="#213043"/><circle cx="24" cy="45" r="8" fill="#213043"/></g>`;
-  const trail = motion.trail.map((q, i) => {
-    const px = baseX + len * q;
-    const py = baseY - height * q;
-    const alpha = 0.18 + i / Math.max(1, motion.trail.length) * 0.55;
-    return `<circle cx="${px}" cy="${py}" r="${5 + i * 0.4}" fill="#ff8b3d" opacity="${alpha.toFixed(2)}"/>`;
-  }).join('');
-  const forceScale = 6;
-  document.getElementById('drawing').innerHTML = `
-    <polygon points="${baseX},${baseY} ${topX},${topY} ${topX},${baseY}" fill="#deebff" stroke="#213043" stroke-width="4"/>
-    <line x1="${baseX}" y1="${baseY}" x2="${topX}" y2="${topY}" stroke="#213043" stroke-width="5"/>
-    <path d="M${baseX} ${baseY + 20}H${topX}" stroke="#c7d7e4" stroke-width="4"/>
-    ${trail}
-    ${block}
-    ${line(bx, by, bx, by + 95, '#2457c5', 'arrowB', 'mg')}
-    ${line(bx, by, bx + nx * Math.min(150, v.N * forceScale), by + ny * Math.min(150, v.N * forceScale), '#1f8a70', 'arrowG', 'N')}
-    ${line(bx, by, bx + upSlopeX * Math.min(120, v.f * forceScale), by + upSlopeY * Math.min(120, v.f * forceScale), '#d63f64', 'arrowR', 'f')}
-    ${line(bx, by, bx + alongX * Math.min(140, Math.abs(v.a) * 24 + 28), by + alongY * Math.min(140, Math.abs(v.a) * 24 + 28), '#ff8b3d', 'arrowO', 'F')}
-    <text x="104" y="74" font-size="21" fill="#62717d">滑块沿斜面运动，变量改变时受力和加速度同步更新</text>`;
-}
-
-function animate(now) {
-  if (!motion.last) motion.last = now;
-  const dt = Math.min(0.05, (now - motion.last) / 1000);
-  motion.last = now;
-  if (motion.playing && Math.abs(motion.a) >= 0.05) {
-    const scaledA = motion.a / 18;
-    motion.vel += scaledA * dt;
-    motion.pos += motion.vel * dt;
-    if (motion.pos > 0.92 || motion.pos < 0.08) {
-      motion.pos = motion.a >= 0 ? 0.08 : 0.92;
-      motion.vel = 0;
-      motion.trail = [];
-    }
-  }
-  motion.trail.push(motion.pos);
-  if (motion.trail.length > 16) motion.trail.shift();
-  updateValues();
-  drawIncline();
-  requestAnimationFrame(animate);
-}
-
-resetMotion(false);
-updateValues();
-drawIncline();
-requestAnimationFrame(animate);
-"""
-    return page("斜面摩擦力互动题页", body, script)
+    return read_template("incline-friction.html")
 
 
 def projectile() -> str:

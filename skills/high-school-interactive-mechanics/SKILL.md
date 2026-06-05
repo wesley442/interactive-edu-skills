@@ -69,7 +69,7 @@ For a basic runnable reference example, use:
 python3 scripts/generate_mechanics_html.py --template incline --output incline-friction.html
 ```
 
-The script is a deterministic reference demo. For user-facing generated HTML, follow the full interactive HTML spec in `references/interactive-html-spec.zh-CN.md`.
+The incline template is the canonical quality baseline for mechanics HTML output. It uses a dark classroom UI, a Canvas scene, `requestAnimationFrame`, adjustable sliders, motion-state detection, force-vector drawing, tabs, history records, and classroom helper actions. For user-facing generated HTML, match that level of interaction and follow the full interactive HTML spec in `references/interactive-html-spec.zh-CN.md`.
 
 ## Physics Rules
 
