@@ -114,9 +114,14 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 
 Preview the reference pages:
 
+Geometry skill (`interactive-geometry`):
+
 - [Square pyramid geometry explainer](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
 - [Cube point-to-plane distance explainer](https://wesley442.github.io/interactive-edu-skills/examples/cube-distance.html)
 - [Regular tetrahedron dihedral angle explainer](https://wesley442.github.io/interactive-edu-skills/examples/dihedral-angle.html)
+
+Mechanics skill (`high-school-interactive-mechanics`):
+
 - [Incline friction simulation](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
 - [Projectile motion animation](https://wesley442.github.io/interactive-edu-skills/examples/projectile-motion.html)
 - [Circular motion simulation](https://wesley442.github.io/interactive-edu-skills/examples/circular-motion.html)

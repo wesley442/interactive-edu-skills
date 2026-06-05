@@ -114,9 +114,14 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 
 在线预览参考页面效果：
 
+几何 Skill（`interactive-geometry`）：
+
 - [正四棱锥几何讲解页](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
 - [正方体点到平面距离讲解页](https://wesley442.github.io/interactive-edu-skills/examples/cube-distance.html)
 - [正四面体二面角讲解页](https://wesley442.github.io/interactive-edu-skills/examples/dihedral-angle.html)
+
+力学 Skill（`high-school-interactive-mechanics`）：
+
 - [斜面摩擦力互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
 - [平抛运动动画](https://wesley442.github.io/interactive-edu-skills/examples/projectile-motion.html)
 - [圆周运动互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/circular-motion.html)
