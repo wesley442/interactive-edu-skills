@@ -32,6 +32,7 @@ interactive-edu-skills/
 │   └── high-school-interactive-mechanics/
 │       ├── SKILL.md
 │       ├── assets/
+│       ├── references/
 │       └── scripts/
 ├── docs/
 │   ├── adding-a-skill.md
@@ -61,9 +62,9 @@ Use the interactive-geometry skill to generate an interactive geometry explainer
 
 See [docs/installation.md](docs/installation.md) for Claude-compatible packaging and direct script usage.
 
-## Run Example Generators
+## Run Reference Generators
 
-The bundled scripts are intentionally small and dependency-light. They generate self-contained HTML files that can be opened directly in a browser.
+The bundled scripts are intentionally small and dependency-light. They generate self-contained reference HTML files that can be opened directly in a browser. Installed skills should use the full `SKILL.md` instructions when generating custom pages for a user request.
 
 ```bash
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py \
@@ -77,7 +78,7 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --output examples/square-pyramid.html
 ```
 
-Preview the generated pages:
+Preview the reference pages:
 
 - [Square pyramid geometry explainer](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
 - [Incline friction simulation](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)

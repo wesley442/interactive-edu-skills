@@ -32,6 +32,7 @@
     .app { max-width: 1180px; margin: 0 auto; padding: 28px; }
     header { margin-bottom: 20px; }
     h1 { margin: 0 0 8px; font-size: 34px; }
+    h2 { margin-top: 0; }
     .subtitle { color: var(--muted); font-size: 18px; }
     .grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; align-items: stretch; }
     .panel {
@@ -49,10 +50,10 @@
       color: #b9f1e7;
       border-radius: 14px;
       padding: 16px 18px;
-      font: 700 26px Georgia, serif;
+      font: 700 25px Georgia, serif;
       margin: 18px 0;
     }
-    .status {
+    .status-pill {
       display: inline-block;
       border-radius: 999px;
       padding: 8px 14px;
@@ -64,13 +65,23 @@
     .formula { color: var(--ink); line-height: 1.8; }
     svg { width: 100%; height: 560px; background: #eef6fb; border-radius: 18px; border: 1px solid var(--line); }
     .note { color: var(--muted); line-height: 1.7; }
-    button { border: 0; border-radius: 999px; padding: 10px 16px; background: var(--ink); color: white; font-weight: 800; cursor: pointer; }
+    .controls { display: flex; gap: 10px; margin: 14px 0 0; flex-wrap: wrap; }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--ink);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.secondary { background: #dce6ee; color: var(--ink); }
     @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } svg { height: 420px; } }
   </style>
 </head>
 <body>
   <main class="app">
-    <header><h1>圆周运动互动题页</h1><div class="subtitle">调节质量、半径和速度，观察向心力如何变化。</div></header>
+    <header><h1>圆周运动互动题页</h1><div class="subtitle">调节质量、半径和速度，播放小球做圆周运动并观察向心力。</div></header>
     <section class="grid"><aside class="panel">
       <h2>题目</h2><p class="note">质量为 $m$ 的小球以速度 $v$ 做半径为 $r$ 的匀速圆周运动，求所需向心力大小。</p>
       <label><span class="row"><span>质量 m</span><output id="mOut"></output></span><input id="m" type="range" min="0.2" max="5" step="0.1" value="1.5"></label>
@@ -79,21 +90,63 @@
       <div class="result" id="answer"></div>
       <div class="formula">$$F=mv^2/r$$ $$a=v^2/r$$</div>
       <p class="note">向心力不是额外的新力，它是指向圆心的合力效果。</p>
-    </aside><section class="panel"><svg viewBox="0 0 720 560"><g id="drawing"></g></svg></section></section>
+    </aside><section class="panel">
+      <svg viewBox="0 0 720 560"><g id="drawing"></g></svg>
+      <div class="controls"><button id="playPause">暂停</button><button id="resetMotion" class="secondary">重置运动</button></div>
+    </section></section>
   </main>
   <script>
-for (const id of ['m','r','v']) document.getElementById(id).addEventListener('input', update);
-function update(){
- const m=+document.getElementById('m').value, r=+document.getElementById('r').value, v=+document.getElementById('v').value;
- const F=m*v*v/r, a=v*v/r; mOut.textContent=`${m.toFixed(1)} kg`; rOut.textContent=`${r.toFixed(1)} m`; vOut.textContent=`${v.toFixed(1)} m/s`; answer.textContent=`F=${F.toFixed(2)}N, a=${a.toFixed(2)}m/s²`;
- const cx=360, cy=280, rr=80+r*35, angle=-0.75, bx=cx+rr*Math.cos(angle), by=cy+rr*Math.sin(angle);
- drawing.innerHTML=`<circle cx="${cx}" cy="${cy}" r="${rr}" fill="#eef6fb" stroke="#213043" stroke-width="5"/><circle cx="${cx}" cy="${cy}" r="6" fill="#213043"/>
- <circle cx="${bx}" cy="${by}" r="${14+m*4}" fill="#ff8b3d"/>
- <line x1="${bx}" y1="${by}" x2="${cx+(bx-cx)*0.38}" y2="${cy+(by-cy)*0.38}" stroke="#2457c5" stroke-width="${Math.min(14,4+F/8)}"/>
- <text x="${cx+(bx-cx)*0.5}" y="${cy+(by-cy)*0.5}" fill="#2457c5" font-size="24" font-weight="800">F</text>
- <line x1="${bx}" y1="${by}" x2="${bx+90}" y2="${by+80}" stroke="#1f8a70" stroke-width="7"/><text x="${bx+94}" y="${by+86}" fill="#1f8a70" font-size="24" font-weight="800">v</text>`;
+const circleMotion = { angle: -0.8, playing: true, last: 0 };
+for (const id of ['m','r','v']) document.getElementById(id).addEventListener('input', drawCircular);
+document.getElementById('playPause').addEventListener('click', () => {
+  circleMotion.playing = !circleMotion.playing;
+  document.getElementById('playPause').textContent = circleMotion.playing ? '暂停' : '播放';
+});
+document.getElementById('resetMotion').addEventListener('click', () => { circleMotion.angle = -0.8; drawCircular(); });
+
+function circularValues() {
+  const m = +document.getElementById('m').value;
+  const r = +document.getElementById('r').value;
+  const v = +document.getElementById('v').value;
+  const F = m * v * v / r;
+  const a = v * v / r;
+  return { m, r, v, F, a };
 }
-update();
+
+function drawCircular() {
+  const v = circularValues();
+  document.getElementById('mOut').textContent = `${v.m.toFixed(1)} kg`;
+  document.getElementById('rOut').textContent = `${v.r.toFixed(1)} m`;
+  document.getElementById('vOut').textContent = `${v.v.toFixed(1)} m/s`;
+  document.getElementById('answer').textContent = `F=${v.F.toFixed(2)}N, a=${v.a.toFixed(2)}m/s²`;
+  const cx = 360, cy = 280, rr = 95 + v.r * 28;
+  const bx = cx + rr * Math.cos(circleMotion.angle);
+  const by = cy + rr * Math.sin(circleMotion.angle);
+  const tx = -Math.sin(circleMotion.angle), ty = Math.cos(circleMotion.angle);
+  document.getElementById('drawing').innerHTML = `
+    <circle cx="${cx}" cy="${cy}" r="${rr}" fill="#eef6fb" stroke="#213043" stroke-width="5"/>
+    <circle cx="${cx}" cy="${cy}" r="7" fill="#213043"/>
+    <path d="M${cx} ${cy}L${bx} ${by}" stroke="#9fb5c8" stroke-width="3" stroke-dasharray="8 8"/>
+    <circle cx="${bx}" cy="${by}" r="${14 + v.m * 3.2}" fill="#ff8b3d"/>
+    <line x1="${bx}" y1="${by}" x2="${cx + (bx - cx) * 0.48}" y2="${cy + (by - cy) * 0.48}" stroke="#2457c5" stroke-width="${Math.min(16, 5 + v.F / 8)}" stroke-linecap="round"/>
+    <line x1="${bx}" y1="${by}" x2="${bx + tx * 105}" y2="${by + ty * 105}" stroke="#1f8a70" stroke-width="7" stroke-linecap="round"/>
+    <text x="${cx + (bx - cx) * 0.58}" y="${cy + (by - cy) * 0.58}" fill="#2457c5" font-size="24" font-weight="800">F</text>
+    <text x="${bx + tx * 112}" y="${by + ty * 112}" fill="#1f8a70" font-size="24" font-weight="800">v</text>
+    <text x="92" y="58" font-size="21" fill="#62717d">小球持续转动；速度沿切线，向心合力指向圆心</text>`;
+}
+
+function animateCircular(now) {
+  if (!circleMotion.last) circleMotion.last = now;
+  const dt = Math.min(0.05, (now - circleMotion.last) / 1000);
+  circleMotion.last = now;
+  const v = circularValues();
+  if (circleMotion.playing) circleMotion.angle += dt * (0.5 + v.v / 3.5);
+  drawCircular();
+  requestAnimationFrame(animateCircular);
+}
+
+drawCircular();
+requestAnimationFrame(animateCircular);
 </script>
 </body>
 </html>

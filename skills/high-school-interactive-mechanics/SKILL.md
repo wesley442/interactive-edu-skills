@@ -11,6 +11,23 @@ Use this skill when the user asks for high-school physics mechanics problems, fo
 
 Default to Simplified Chinese for user-facing explanations, generated problems, classroom notes, and HTML UI text, unless the user explicitly requests another language. Keep file names, script names, frontmatter, and machine-readable metadata in English.
 
+## Scope
+
+Prefer high-school mechanics:
+
+- Uniformly accelerated linear motion.
+- Newton's laws.
+- Inclines and friction.
+- Connected bodies and rope tension.
+- Projectile motion.
+- Circular motion.
+- Springs and Hooke's law.
+- Work-energy theorem.
+- Mechanical energy conservation.
+- Momentum conservation and collisions.
+
+If the user asks for complex electromagnetism, thermodynamics, waves, university mechanics, or engineering-grade simulation, state the limitation and give a high-school-accessible version when possible.
+
 ## Core Output
 
 Default response:
@@ -27,6 +44,18 @@ Default response:
 
 If the user asks for HTML, interactive page, animation, adjustable variables, sliders, or simulation, generate a self-contained HTML file.
 
+Before generating any problem or HTML, explicitly determine:
+
+1. Object of study.
+2. Motion process.
+3. Known quantities.
+4. Unknown quantities.
+5. Constraints.
+6. Required forces.
+7. Method: Newton's laws, kinematics, energy, or momentum.
+8. Adjustable variables.
+9. Edge states: no motion, critical state, reverse direction, or invalid setup.
+
 ## Supported First-Version Templates
 
 - Incline friction: adjustable mass, angle, friction coefficient, gravity.
@@ -34,11 +63,13 @@ If the user asks for HTML, interactive page, animation, adjustable variables, sl
 - Circular motion: adjustable mass, radius, speed.
 - Connected bodies and springs can be generated as explanations; interactive scripts should be added as templates before claiming deterministic local execution.
 
-For a runnable local example, use:
+For a basic runnable reference example, use:
 
 ```bash
 python3 scripts/generate_mechanics_html.py --template incline --output incline-friction.html
 ```
+
+The script is a deterministic reference demo. For user-facing generated HTML, follow the full interactive HTML spec in `references/interactive-html-spec.zh-CN.md`.
 
 ## Physics Rules
 
@@ -64,6 +95,10 @@ When generating HTML:
 - Clamp variables to reasonable ranges.
 - Clearly display critical states, such as no sliding, zero acceleration, or direction change.
 - Keep the layout readable for classroom projection.
+- Explain why each equation is used; do not only display formulas.
+- Show at least one visual change that makes animation obvious, such as moving objects, velocity vectors, force arrows, traces, changing energy bars, or step highlights.
+
+For detailed Chinese requirements and variable templates, read `references/interactive-html-spec.zh-CN.md` when the user asks for HTML, animation, adjustable variables, or slider controls.
 
 ## Suggested Layout
 

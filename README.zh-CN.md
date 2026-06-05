@@ -32,6 +32,7 @@ interactive-edu-skills/
 │   └── high-school-interactive-mechanics/
 │       ├── SKILL.md
 │       ├── assets/
+│       ├── references/
 │       └── scripts/
 ├── docs/
 │   ├── adding-a-skill.md
@@ -61,9 +62,9 @@ ln -s "$(pwd)/skills/high-school-interactive-mechanics" ~/.codex/skills/high-sch
 
 Claude-compatible 的打包方式和脚本直用方式见 [docs/installation.md](docs/installation.md)。
 
-## 运行示例生成器
+## 运行参考生成器
 
-仓库内置脚本尽量保持轻量、少依赖。它们会生成可直接在浏览器打开的自包含 HTML 文件。
+仓库内置脚本尽量保持轻量、少依赖。它们会生成可直接在浏览器打开的自包含参考 HTML 文件。安装 skill 后，模型/agent 应优先按照 `SKILL.md` 中的完整规范，为用户需求生成更完整的定制页面。
 
 ```bash
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py \
@@ -77,7 +78,7 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --output examples/square-pyramid.html
 ```
 
-在线预览示例页面效果：
+在线预览参考页面效果：
 
 - [正四棱锥几何讲解页](https://wesley442.github.io/interactive-edu-skills/examples/square-pyramid.html)
 - [斜面摩擦力互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/incline-friction.html)
