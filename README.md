@@ -66,6 +66,26 @@ See [docs/installation.md](docs/installation.md) for Claude-compatible packaging
 
 The bundled scripts are intentionally small and dependency-light. They generate self-contained reference HTML files that can be opened directly in a browser. Installed skills should use the full `SKILL.md` instructions when generating custom pages for a user request.
 
+Available geometry templates:
+
+| Template | Topic | Example |
+|---|---|---|
+| `square-pyramid` | Square pyramid line-plane angle | `examples/square-pyramid.html` |
+| `cube-distance` | Cube point-to-plane distance | `examples/cube-distance.html` |
+| `dihedral-angle` | Regular tetrahedron dihedral angle | `examples/dihedral-angle.html` |
+
+Available mechanics templates:
+
+| Template | Topic | Example |
+|---|---|---|
+| `incline` | Incline friction and force analysis | `examples/incline-friction.html` |
+| `projectile` | Projectile motion | `examples/projectile-motion.html` |
+| `circular` | Uniform circular motion | `examples/circular-motion.html` |
+| `spring-energy` | Spring energy conversion | `examples/spring-energy.html` |
+| `connected-bodies` | Connected bodies, tension, and friction | `examples/connected-bodies.html` |
+
+Generate any single template:
+
 ```bash
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py \
   --template spring-energy \
@@ -76,6 +96,20 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --template cube-distance \
   --output examples/cube-distance.html
+```
+
+Regenerate all bundled examples:
+
+```bash
+python3 skills/interactive-geometry/scripts/generate_geometry_html.py --template square-pyramid --output examples/square-pyramid.html
+python3 skills/interactive-geometry/scripts/generate_geometry_html.py --template cube-distance --output examples/cube-distance.html
+python3 skills/interactive-geometry/scripts/generate_geometry_html.py --template dihedral-angle --output examples/dihedral-angle.html
+
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template incline --output examples/incline-friction.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template projectile --output examples/projectile-motion.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template circular --output examples/circular-motion.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template spring-energy --output examples/spring-energy.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template connected-bodies --output examples/connected-bodies.html
 ```
 
 Preview the reference pages:
@@ -91,7 +125,8 @@ Preview the reference pages:
 
 ## Roadmap
 
-- More mechanics templates: pulley systems, spring energy, collisions.
+- More mechanics templates: pulley systems, collisions, circular critical motion.
+- More geometry templates: skew-line angle, sphere/cone/cylinder sections, plane-geometry proof pages.
 - Electromagnetism skill.
 - Chemistry reaction and molecule visualization skill.
 - Biology process animation skill.

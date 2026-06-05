@@ -66,6 +66,26 @@ Claude-compatible 的打包方式和脚本直用方式见 [docs/installation.md]
 
 仓库内置脚本尽量保持轻量、少依赖。它们会生成可直接在浏览器打开的自包含参考 HTML 文件。安装 skill 后，模型/agent 应优先按照 `SKILL.md` 中的完整规范，为用户需求生成更完整的定制页面。
 
+当前几何模板：
+
+| Template | 主题 | 示例文件 |
+|---|---|---|
+| `square-pyramid` | 正四棱锥线面角 | `examples/square-pyramid.html` |
+| `cube-distance` | 正方体点到平面距离 | `examples/cube-distance.html` |
+| `dihedral-angle` | 正四面体二面角 | `examples/dihedral-angle.html` |
+
+当前力学模板：
+
+| Template | 主题 | 示例文件 |
+|---|---|---|
+| `incline` | 斜面摩擦力与受力分析 | `examples/incline-friction.html` |
+| `projectile` | 平抛运动 | `examples/projectile-motion.html` |
+| `circular` | 匀速圆周运动 | `examples/circular-motion.html` |
+| `spring-energy` | 弹簧能量转化 | `examples/spring-energy.html` |
+| `connected-bodies` | 连接体、绳子拉力与摩擦力 | `examples/connected-bodies.html` |
+
+生成单个模板：
+
 ```bash
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py \
   --template spring-energy \
@@ -76,6 +96,20 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --template cube-distance \
   --output examples/cube-distance.html
+```
+
+重新生成全部内置示例：
+
+```bash
+python3 skills/interactive-geometry/scripts/generate_geometry_html.py --template square-pyramid --output examples/square-pyramid.html
+python3 skills/interactive-geometry/scripts/generate_geometry_html.py --template cube-distance --output examples/cube-distance.html
+python3 skills/interactive-geometry/scripts/generate_geometry_html.py --template dihedral-angle --output examples/dihedral-angle.html
+
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template incline --output examples/incline-friction.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template projectile --output examples/projectile-motion.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template circular --output examples/circular-motion.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template spring-energy --output examples/spring-energy.html
+python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template connected-bodies --output examples/connected-bodies.html
 ```
 
 在线预览参考页面效果：
@@ -91,7 +125,8 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
 
 ## 路线图
 
-- 增加更多力学模板：滑轮系统、弹簧能量、碰撞与动量。
+- 增加更多力学模板：滑轮系统、碰撞与动量、圆周临界问题。
+- 增加更多几何模板：异面直线夹角、球/圆锥/圆柱截面、平面几何证明页。
 - 增加电磁学 skill。
 - 增加化学反应和分子可视化 skill。
 - 增加生物过程动画 skill。
