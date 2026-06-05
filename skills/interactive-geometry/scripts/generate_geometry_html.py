@@ -7,93 +7,15 @@ import argparse
 from pathlib import Path
 
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def read_template(name: str) -> str:
+    return (SCRIPT_DIR.parent / "templates" / name).read_text(encoding="utf-8")
+
+
 def square_pyramid() -> str:
-    return """<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>正四棱锥线面角互动讲解</title>
-  <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\\\(', '\\\\)']] } };</script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <style>
-    :root { --ink:#213043; --muted:#637382; --line:#d9e3eb; --blue:#2457c5; --green:#1f8a70; --rose:#d63f64; --orange:#ff8b3d; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:linear-gradient(135deg,#f7f2e8,#f8fbfc 45%,#e4effa); min-height:100vh; }
-    .app { max-width:1180px; margin:0 auto; padding:28px; }
-    h1 { margin:0 0 8px; font-size:34px; }
-    .subtitle { color:var(--muted); font-size:18px; margin-bottom:20px; }
-    .grid { display:grid; grid-template-columns:390px 1fr; gap:20px; }
-    .panel { background:rgba(255,255,255,.93); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:0 18px 45px rgba(33,48,67,.12); }
-    .step { border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:10px 0; cursor:pointer; }
-    .step.active { border-color:var(--blue); background:#edf5ff; }
-    button { border:0; border-radius:999px; padding:10px 16px; color:white; background:var(--ink); font-weight:800; cursor:pointer; margin-right:8px; }
-    .answer { background:var(--ink); color:#b9f1e7; border-radius:14px; padding:14px 16px; font:700 26px Georgia,serif; margin:14px 0; }
-    svg { width:100%; height:570px; background:#eef6fb; border-radius:18px; border:1px solid var(--line); }
-    .note { color:var(--muted); line-height:1.7; }
-    @media (max-width:860px) { .grid{grid-template-columns:1fr;} svg{height:430px;} }
-  </style>
-</head>
-<body>
-  <main class="app">
-    <h1>正四棱锥线面角互动讲解</h1>
-    <div class="subtitle">点击步骤，高亮对应的点、线、面和向量思路。</div>
-    <section class="grid">
-      <aside class="panel">
-        <h2>题目</h2>
-        <p class="note">正四棱锥 $P-ABCD$ 中，底面边长为 2，高为 1，$E$ 为 $PC$ 的中点。求直线 $BE$ 与平面 $PAC$ 所成角的正弦值。</p>
-        <div class="answer">答案：$\\sin\\theta=\\frac{1}{3}$</div>
-        <h2>讲解步骤</h2>
-        <div class="step active" data-step="0"><b>1. 建立坐标系</b><br/>底面中心为原点，写出 P、A、B、C、E 坐标。</div>
-        <div class="step" data-step="1"><b>2. 构造平面 PAC</b><br/>用 $PA$ 与 $PC$ 求平面法向量。</div>
-        <div class="step" data-step="2"><b>3. 构造方向向量</b><br/>直线 BE 的方向向量为 $\\vec{BE}$。</div>
-        <div class="step" data-step="3"><b>4. 计算线面角</b><br/>$\\sin\\theta=|v\\cdot n|/(|v||n|)$。</div>
-        <button id="prev">上一步</button><button id="next">下一步</button>
-        <p class="note">易错点：线面角不是直线与平面内任意线的夹角，而是直线与其在平面上的射影所成角。</p>
-      </aside>
-      <section class="panel">
-        <svg viewBox="0 0 720 570" role="img" aria-label="Square pyramid diagram">
-          <defs>
-            <marker id="arrow" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto"><path d="M2 2L14 8L2 14Z" fill="#d63f64"/></marker>
-          </defs>
-          <g id="drawing"></g>
-        </svg>
-      </section>
-    </section>
-  </main>
-  <script>
-const steps = document.querySelectorAll('.step');
-let current = 0;
-for (const step of steps) step.addEventListener('click', () => setStep(+step.dataset.step));
-prev.onclick = () => setStep((current + 3) % 4);
-next.onclick = () => setStep((current + 1) % 4);
-function label(x,y,t,c='#213043'){ return `<text x="${x}" y="${y}" font-size="24" font-family="Georgia,serif" font-weight="800" fill="${c}">${t}</text>`; }
-function draw(step){
-  const P=[360,80], A=[170,420], B=[545,425], C=[380,500], D=[245,455], E=[490,290];
-  const plane = step === 1 || step === 3 ? '#cfe4ff' : '#f8fbff';
-  const be = step === 2 || step === 3 ? '#d63f64' : '#213043';
-  const pc = step === 1 ? '#2457c5' : '#213043';
-  const pa = step === 1 ? '#2457c5' : '#213043';
-  drawing.innerHTML = `
-    <ellipse cx="355" cy="468" rx="260" ry="54" fill="#dce8f6" opacity=".85"/>
-    <polygon points="${P} ${A} ${C}" fill="${plane}" stroke="${pa}" stroke-width="5"/>
-    <polygon points="${P} ${C} ${B}" fill="#d7e8ff" stroke="${pc}" stroke-width="5"/>
-    <polygon points="${P} ${B} ${A}" fill="#ffffff" opacity=".8" stroke="#213043" stroke-width="5"/>
-    <path d="M${A}L${D}L${B} M${D}L${C}" fill="none" stroke="#213043" stroke-width="5" stroke-dasharray="12 9" opacity=".65"/>
-    <line x1="${B[0]}" y1="${B[1]}" x2="${E[0]}" y2="${E[1]}" stroke="${be}" stroke-width="8" marker-end="url(#arrow)"/>
-    <circle cx="${P[0]}" cy="${P[1]}" r="12" fill="#2457c5"/>${label(P[0]+16,P[1]+6,'P')}
-    <circle cx="${A[0]}" cy="${A[1]}" r="10" fill="#1f8a70"/>${label(A[0]-30,A[1]+5,'A')}
-    <circle cx="${B[0]}" cy="${B[1]}" r="10" fill="#1f8a70"/>${label(B[0]+14,B[1]+5,'B')}
-    <circle cx="${C[0]}" cy="${C[1]}" r="10" fill="#1f8a70"/>${label(C[0]+12,C[1]+24,'C')}
-    <circle cx="${E[0]}" cy="${E[1]}" r="10" fill="#d63f64"/>${label(E[0]+12,E[1]-8,'E','#d63f64')}
-    <text x="72" y="64" font-size="22" fill="#637382">${['坐标建模','高亮平面 PAC','高亮直线 BE','代入线面角公式'][step]}</text>`;
-}
-function setStep(i){ current=i; steps.forEach((s,idx)=>s.classList.toggle('active', idx===i)); draw(i); }
-setStep(0);
-  </script>
-</body>
-</html>
-"""
+    return read_template("square-pyramid.html")
 
 
 TEMPLATES = {"square-pyramid": square_pyramid}
