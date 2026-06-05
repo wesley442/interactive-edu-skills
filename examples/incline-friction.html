@@ -5,224 +5,613 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>斜面摩擦力互动题页</title>
   <script>
-    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    window.MathJax = { tex: { inlineMath: [["$", "$"], ["\\(", "\\)"]] } };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
     :root {
       color-scheme: light;
-      --ink: #213043;
+      --ink: #1f2b3a;
       --muted: #62717d;
-      --line: #d9e3eb;
-      --panel: #ffffff;
-      --soft: #f2f7fa;
+      --line: #d7e2ea;
+      --paper: #ffffff;
+      --soft: #eef6fb;
       --blue: #2457c5;
       --green: #1f8a70;
       --rose: #d63f64;
       --orange: #ff8b3d;
+      --amber: #f5a524;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: var(--ink);
-      background: linear-gradient(135deg, #fff4dc 0%, #f8fbfc 45%, #e4effa 100%);
       min-height: 100vh;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 8% 15%, rgba(255, 220, 160, .42), transparent 30%),
+        radial-gradient(circle at 96% 90%, rgba(191, 230, 223, .55), transparent 34%),
+        linear-gradient(135deg, #fff8e9 0%, #f8fbfc 44%, #e4effa 100%);
     }
-    .app { max-width: 1180px; margin: 0 auto; padding: 28px; }
-    header { margin-bottom: 20px; }
-    h1 { margin: 0 0 8px; font-size: 34px; }
-    h2 { margin-top: 0; }
-    .subtitle { color: var(--muted); font-size: 18px; }
-    .grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; align-items: stretch; }
-    .panel {
-      background: rgba(255,255,255,.92);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 18px 45px rgba(33,48,67,.12);
-      padding: 22px;
+
+    .app {
+      width: min(1220px, calc(100vw - 36px));
+      margin: 0 auto;
+      padding: 30px 0 42px;
     }
-    label { display: grid; gap: 8px; margin: 18px 0; font-weight: 700; }
-    .row { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-weight: 600; }
-    input[type="range"] { width: 100%; accent-color: var(--green); }
-    .result {
-      background: var(--ink);
-      color: #b9f1e7;
-      border-radius: 14px;
-      padding: 16px 18px;
-      font: 700 25px Georgia, serif;
-      margin: 18px 0;
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 20px;
     }
-    .status-pill {
-      display: inline-block;
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 38px;
+      padding: 0 16px;
       border-radius: 999px;
-      padding: 8px 14px;
-      color: white;
-      background: var(--green);
+      color: #fff;
+      background: var(--ink);
       font-weight: 800;
-      margin: 8px 0 16px;
+      white-space: nowrap;
     }
-    .formula { color: var(--ink); line-height: 1.8; }
-    svg { width: 100%; height: 560px; background: #eef6fb; border-radius: 18px; border: 1px solid var(--line); }
-    .note { color: var(--muted); line-height: 1.7; }
-    .controls { display: flex; gap: 10px; margin: 14px 0 0; flex-wrap: wrap; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, .94);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 20px 55px rgba(31, 43, 58, .13);
+      padding: 24px;
+    }
+
+    .card-title {
+      margin: 0 0 14px;
+      font-size: 24px;
+    }
+
+    .problem {
+      color: var(--muted);
+      line-height: 1.85;
+      margin: 0 0 18px;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0;
+      font-weight: 800;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    output {
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--green);
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 18px 0 12px;
+    }
+
+    .metric {
+      min-height: 76px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f7fafc;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      font: 800 24px Georgia, serif;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .answer {
+      margin: 14px 0;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: var(--ink);
+      color: #baf3e9;
+      font: 800 29px Georgia, serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .formula {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      line-height: 1.9;
+      text-align: center;
+    }
+
+    .canvas-panel {
+      padding: 20px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .hint {
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     button {
       border: 0;
       border-radius: 999px;
       padding: 10px 16px;
       background: var(--ink);
-      color: white;
-      font-weight: 800;
+      color: #fff;
+      font-weight: 900;
       cursor: pointer;
     }
-    button.secondary { background: #dce6ee; color: var(--ink); }
-    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } svg { height: 420px; } }
+
+    button.secondary {
+      background: #dce7ef;
+      color: var(--ink);
+    }
+
+    svg {
+      width: 100%;
+      height: min(620px, 58vw);
+      min-height: 460px;
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        linear-gradient(to right, rgba(125, 152, 174, .18) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(125, 152, 174, .18) 1px, transparent 1px),
+        #eef6fb;
+      background-size: 44px 44px;
+    }
+
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-weight: 800;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .teaching {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .teaching article {
+      background: rgba(255, 255, 255, .9);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .teaching h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
+
+    .teaching p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 940px) {
+      header { align-items: flex-start; flex-direction: column; }
+      .layout, .teaching { grid-template-columns: 1fr; }
+      svg { height: 470px; min-height: 420px; }
+      .legend { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
   <main class="app">
     <header>
-      <h1>斜面摩擦力互动题页</h1>
-      <div class="subtitle">调节质量、斜面角度和摩擦因数，实时观察受力图、加速度和滑块运动。</div>
+      <div>
+        <h1>斜面摩擦力互动题页</h1>
+        <div class="subtitle">拖动变量滑块，实时观察受力图、加速度、运动状态和关键结论。</div>
+      </div>
+      <div class="badge">高中力学 · 牛顿第二定律</div>
     </header>
-    <section class="grid">
+
+    <section class="layout">
       <aside class="panel">
-        <h2>题目</h2>
-        <p class="note">质量为 $m$ 的小物块放在倾角为 $\theta$ 的粗糙斜面上，动摩擦因数为 $\mu$。若物块沿斜面方向运动，求沿斜面方向的加速度。</p>
-        <label><span class="row"><span>质量 m</span><output id="mOut"></output></span><input id="m" type="range" min="0.5" max="5" step="0.1" value="2"></label>
-        <label><span class="row"><span>角度 θ</span><output id="thetaOut"></output></span><input id="theta" type="range" min="5" max="55" step="1" value="30"></label>
-        <label><span class="row"><span>摩擦因数 μ</span><output id="muOut"></output></span><input id="mu" type="range" min="0" max="0.8" step="0.01" value="0.2"></label>
-        <label><span class="row"><span>重力加速度 g</span><output id="gOut"></output></span><input id="g" type="range" min="9.0" max="10.0" step="0.01" value="9.8"></label>
-        <div class="result" id="answer"></div>
-        <div class="status-pill" id="motionStatus"></div>
-        <p class="note" id="motionReadout"></p>
-        <div class="formula">$$N=mg\cos\theta$$ $$f=\mu N$$ $$a=g(\sin\theta-\mu\cos\theta)$$</div>
+        <h2 class="card-title">题目</h2>
+        <p class="problem">
+          质量为 $m$ 的小物块在倾角为 $\theta$ 的粗糙斜面上沿斜面方向下滑，动摩擦因数为 $\mu$。
+          已知重力加速度为 $g$，求物块沿斜面方向的加速度，并判断运动状态。
+        </p>
+
+        <label>
+          <span class="row"><span>质量 m</span><output id="mOut"></output></span>
+          <input id="m" type="range" min="0.5" max="5" step="0.1" value="2" />
+        </label>
+
+        <label>
+          <span class="row"><span>斜面角 θ</span><output id="thetaOut"></output></span>
+          <input id="theta" type="range" min="5" max="60" step="1" value="30" />
+        </label>
+
+        <label>
+          <span class="row"><span>动摩擦因数 μ</span><output id="muOut"></output></span>
+          <input id="mu" type="range" min="0" max="0.9" step="0.01" value="0.20" />
+        </label>
+
+        <label>
+          <span class="row"><span>重力加速度 g</span><output id="gOut"></output></span>
+          <input id="g" type="range" min="9.0" max="10.0" step="0.01" value="9.80" />
+        </label>
+
+        <div class="result-grid">
+          <div class="metric"><span>重力 G</span><strong id="gForce"></strong></div>
+          <div class="metric"><span>支持力 N</span><strong id="normalForce"></strong></div>
+          <div class="metric"><span>摩擦力 f</span><strong id="frictionForce"></strong></div>
+          <div class="metric"><span>沿斜面合力 F</span><strong id="netForce"></strong></div>
+        </div>
+
+        <div class="answer" id="answer"></div>
+        <div class="status" id="motionStatus"></div>
+        <p class="problem" id="motionReadout"></p>
+
+        <div class="formula">
+          $$G=mg$$
+          $$N=mg\cos\theta$$
+          $$f=\mu N$$
+          $$F=mg\sin\theta-\mu mg\cos\theta$$
+          $$a=g(\sin\theta-\mu\cos\theta)$$
+        </div>
       </aside>
-      <section class="panel">
-        <svg id="scene" viewBox="0 0 720 560" role="img" aria-label="Incline force animation">
+
+      <section class="panel canvas-panel">
+        <div class="toolbar">
+          <p class="hint">右侧动画按 $s=\frac{1}{2}at^2$ 的思想更新位移；变量变化时，箭头长度、方向和结论同步更新。</p>
+          <div class="controls">
+            <button id="playPause">暂停</button>
+            <button id="resetMotion" class="secondary">重置</button>
+          </div>
+        </div>
+
+        <svg id="scene" viewBox="0 0 820 620" role="img" aria-label="斜面滑块受力动画">
           <defs>
-            <marker id="arrowB" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#2457c5"/></marker>
-            <marker id="arrowG" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#1f8a70"/></marker>
-            <marker id="arrowR" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#d63f64"/></marker>
-            <marker id="arrowO" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 3L16 9L2 15Z" fill="#ff8b3d"/></marker>
+            <marker id="arrowBlue" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M3 4L18 10L3 16Z" fill="#2457c5"></path>
+            </marker>
+            <marker id="arrowGreen" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M3 4L18 10L3 16Z" fill="#1f8a70"></path>
+            </marker>
+            <marker id="arrowRose" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M3 4L18 10L3 16Z" fill="#d63f64"></path>
+            </marker>
+            <marker id="arrowOrange" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto" markerUnits="userSpaceOnUse">
+              <path d="M3 4L18 10L3 16Z" fill="#ff8b3d"></path>
+            </marker>
           </defs>
           <g id="drawing"></g>
         </svg>
-        <div class="controls">
-          <button id="playPause">暂停</button>
-          <button id="resetMotion" class="secondary">重置运动</button>
+
+        <div class="legend">
+          <div class="legend-item"><span class="dot" style="background:#2457c5"></span>重力 G</div>
+          <div class="legend-item"><span class="dot" style="background:#1f8a70"></span>支持力 N</div>
+          <div class="legend-item"><span class="dot" style="background:#d63f64"></span>摩擦力 f</div>
+          <div class="legend-item"><span class="dot" style="background:#ff8b3d"></span>沿斜面合力 F</div>
         </div>
-        <p class="note">蓝色是重力，绿色是支持力，红色是摩擦力，橙色是沿斜面合力方向。滑块位置由加速度随时间更新。</p>
       </section>
     </section>
+
+    <section class="teaching">
+      <article>
+        <h3>建模提醒</h3>
+        <p>研究对象是滑块；坐标轴取沿斜面向下为正，垂直斜面向外为正。</p>
+      </article>
+      <article>
+        <h3>易错点</h3>
+        <p>摩擦力方向不是总向左或向右，而是沿接触面、与相对运动或相对运动趋势相反。</p>
+      </article>
+      <article>
+        <h3>课堂提问</h3>
+        <p>当 $\mu$ 增大到什么程度时，$a$ 会变为 0？为什么质量 m 不影响加速度？</p>
+      </article>
+    </section>
   </main>
+
   <script>
-const inputIds = ['m','theta','mu','g'];
-const motion = { pos: 0.2, vel: 0, last: 0, playing: true, a: 0, direction: 1, trail: [] };
-for (const id of inputIds) document.getElementById(id).addEventListener('input', () => { resetMotion(false); updateValues(); drawIncline(); });
-document.getElementById('playPause').addEventListener('click', () => {
-  motion.playing = !motion.playing;
-  document.getElementById('playPause').textContent = motion.playing ? '暂停' : '播放';
-  motion.last = performance.now();
-});
-document.getElementById('resetMotion').addEventListener('click', () => resetMotion(true));
+    const els = {
+      m: document.getElementById("m"),
+      theta: document.getElementById("theta"),
+      mu: document.getElementById("mu"),
+      g: document.getElementById("g"),
+      mOut: document.getElementById("mOut"),
+      thetaOut: document.getElementById("thetaOut"),
+      muOut: document.getElementById("muOut"),
+      gOut: document.getElementById("gOut"),
+      gForce: document.getElementById("gForce"),
+      normalForce: document.getElementById("normalForce"),
+      frictionForce: document.getElementById("frictionForce"),
+      netForce: document.getElementById("netForce"),
+      answer: document.getElementById("answer"),
+      status: document.getElementById("motionStatus"),
+      readout: document.getElementById("motionReadout"),
+      drawing: document.getElementById("drawing"),
+      playPause: document.getElementById("playPause"),
+      reset: document.getElementById("resetMotion")
+    };
 
-function line(x1, y1, x2, y2, color, marker, label) {
-  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="7" stroke-linecap="round" marker-end="url(#${marker})"/><text x="${x2+8}" y="${y2+4}" font-size="22" font-weight="800" fill="${color}">${label}</text>`;
-}
+    const sim = {
+      playing: true,
+      last: 0,
+      s: 0.18,
+      v: 0.10,
+      trail: []
+    };
 
-function values() {
-  const m = +document.getElementById('m').value;
-  const theta = +document.getElementById('theta').value;
-  const mu = +document.getElementById('mu').value;
-  const g = +document.getElementById('g').value;
-  const rad = theta * Math.PI / 180;
-  const N = m * g * Math.cos(rad);
-  const f = mu * N;
-  const a = g * (Math.sin(rad) - mu * Math.cos(rad));
-  return { m, theta, mu, g, rad, N, f, a };
-}
-
-function updateValues() {
-  const v = values();
-  motion.a = v.a;
-  motion.direction = Math.sign(v.a || 1);
-  document.getElementById('mOut').textContent = `${v.m.toFixed(1)} kg`;
-  document.getElementById('thetaOut').textContent = `${v.theta.toFixed(0)}°`;
-  document.getElementById('muOut').textContent = v.mu.toFixed(2);
-  document.getElementById('gOut').textContent = `${v.g.toFixed(2)} m/s²`;
-  document.getElementById('answer').textContent = `a = ${v.a.toFixed(2)} m/s²`;
-  document.getElementById('motionReadout').textContent = `动画位移进度：${(motion.pos * 100).toFixed(0)}%，速度比例：${motion.vel.toFixed(2)}`;
-  const statusEl = document.getElementById('motionStatus');
-  statusEl.textContent = Math.abs(v.a) < 0.05 ? '临界状态：加速度约为 0' : (v.a > 0 ? '沿斜面向下加速' : '合力沿斜面向上');
-  statusEl.style.background = Math.abs(v.a) < 0.05 ? '#ff8b3d' : (v.a > 0 ? '#1f8a70' : '#d63f64');
-}
-
-function resetMotion(alsoDraw) {
-  motion.pos = 0.2;
-  motion.vel = 0;
-  motion.last = performance.now();
-  motion.trail = [];
-  if (alsoDraw) drawIncline();
-}
-
-function drawIncline() {
-  const v = values();
-  const baseX = 100, baseY = 440, len = 520, height = Math.tan(v.rad) * len;
-  const topX = baseX + len, topY = baseY - height;
-  const t = Math.max(0.08, Math.min(0.92, motion.pos));
-  const bx = baseX + len * t;
-  const by = baseY - height * t;
-  const nx = Math.sin(v.rad), ny = -Math.cos(v.rad);
-  const upSlopeX = -Math.cos(v.rad), upSlopeY = -Math.sin(v.rad);
-  const alongX = Math.cos(v.rad) * Math.sign(v.a || 1);
-  const alongY = -Math.sin(v.rad) * Math.sign(v.a || 1);
-  const block = `<g transform="translate(${bx} ${by}) rotate(${-v.theta})"><rect x="-42" y="-34" width="84" height="68" rx="12" fill="#fff" stroke="#213043" stroke-width="6"/><circle cx="-24" cy="45" r="8" fill="#213043"/><circle cx="24" cy="45" r="8" fill="#213043"/></g>`;
-  const trail = motion.trail.map((q, i) => {
-    const px = baseX + len * q;
-    const py = baseY - height * q;
-    const alpha = 0.18 + i / Math.max(1, motion.trail.length) * 0.55;
-    return `<circle cx="${px}" cy="${py}" r="${5 + i * 0.4}" fill="#ff8b3d" opacity="${alpha.toFixed(2)}"/>`;
-  }).join('');
-  const forceScale = 6;
-  document.getElementById('drawing').innerHTML = `
-    <polygon points="${baseX},${baseY} ${topX},${topY} ${topX},${baseY}" fill="#deebff" stroke="#213043" stroke-width="4"/>
-    <line x1="${baseX}" y1="${baseY}" x2="${topX}" y2="${topY}" stroke="#213043" stroke-width="5"/>
-    <path d="M${baseX} ${baseY + 20}H${topX}" stroke="#c7d7e4" stroke-width="4"/>
-    ${trail}
-    ${block}
-    ${line(bx, by, bx, by + 95, '#2457c5', 'arrowB', 'mg')}
-    ${line(bx, by, bx + nx * Math.min(150, v.N * forceScale), by + ny * Math.min(150, v.N * forceScale), '#1f8a70', 'arrowG', 'N')}
-    ${line(bx, by, bx + upSlopeX * Math.min(120, v.f * forceScale), by + upSlopeY * Math.min(120, v.f * forceScale), '#d63f64', 'arrowR', 'f')}
-    ${line(bx, by, bx + alongX * Math.min(140, Math.abs(v.a) * 24 + 28), by + alongY * Math.min(140, Math.abs(v.a) * 24 + 28), '#ff8b3d', 'arrowO', 'F')}
-    <text x="104" y="74" font-size="21" fill="#62717d">滑块沿斜面运动，变量改变时受力和加速度同步更新</text>`;
-}
-
-function animate(now) {
-  if (!motion.last) motion.last = now;
-  const dt = Math.min(0.05, (now - motion.last) / 1000);
-  motion.last = now;
-  if (motion.playing && Math.abs(motion.a) >= 0.05) {
-    const scaledA = motion.a / 18;
-    motion.vel += scaledA * dt;
-    motion.pos += motion.vel * dt;
-    if (motion.pos > 0.92 || motion.pos < 0.08) {
-      motion.pos = motion.a >= 0 ? 0.08 : 0.92;
-      motion.vel = 0;
-      motion.trail = [];
+    function num(id) {
+      return Number(els[id].value);
     }
-  }
-  motion.trail.push(motion.pos);
-  if (motion.trail.length > 16) motion.trail.shift();
-  updateValues();
-  drawIncline();
-  requestAnimationFrame(animate);
-}
 
-resetMotion(false);
-updateValues();
-drawIncline();
-requestAnimationFrame(animate);
-</script>
+    function model() {
+      const m = num("m");
+      const thetaDeg = num("theta");
+      const mu = num("mu");
+      const g = num("g");
+      const theta = thetaDeg * Math.PI / 180;
+      const G = m * g;
+      const N = G * Math.cos(theta);
+      const f = mu * N;
+      const F = G * Math.sin(theta) - f;
+      const a = F / m;
+      return { m, thetaDeg, theta, mu, g, G, N, f, F, a };
+    }
+
+    function fmt(value, unit, digits = 2) {
+      return `${value.toFixed(digits)} ${unit}`;
+    }
+
+    function setStatus(data) {
+      if (Math.abs(data.a) < 0.03) {
+        els.status.textContent = "临界状态：沿斜面合力约为 0";
+        els.status.style.background = "var(--amber)";
+        return;
+      }
+
+      if (data.a > 0) {
+        els.status.textContent = "沿斜面向下加速";
+        els.status.style.background = "var(--green)";
+        return;
+      }
+
+      els.status.textContent = "若正向下滑则减速；从静止释放需判断静摩擦";
+      els.status.style.background = "var(--rose)";
+    }
+
+    function updateText(data) {
+      els.mOut.textContent = fmt(data.m, "kg", 1);
+      els.thetaOut.textContent = `${data.thetaDeg.toFixed(0)}°`;
+      els.muOut.textContent = data.mu.toFixed(2);
+      els.gOut.textContent = fmt(data.g, "m/s²", 2);
+      els.gForce.textContent = fmt(data.G, "N", 2);
+      els.normalForce.textContent = fmt(data.N, "N", 2);
+      els.frictionForce.textContent = fmt(data.f, "N", 2);
+      els.netForce.textContent = fmt(data.F, "N", 2);
+      els.answer.textContent = `a = ${data.a.toFixed(2)} m/s²`;
+      els.readout.textContent = `动画位移进度 ${(sim.s * 100).toFixed(0)}%，速度比例 ${sim.v.toFixed(2)}。`;
+      setStatus(data);
+    }
+
+    function arrow(x1, y1, x2, y2, color, marker, label, labelDx = 8, labelDy = 4) {
+      return `
+        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+          stroke="${color}" stroke-width="7" stroke-linecap="round" marker-end="url(#${marker})" />
+        <text x="${x2 + labelDx}" y="${y2 + labelDy}" fill="${color}" font-size="24" font-weight="900">${label}</text>
+      `;
+    }
+
+    function draw(data) {
+      const baseX = 96;
+      const baseY = 486;
+      const rampLen = 650;
+      const rampHeight = Math.tan(data.theta) * rampLen;
+      const topX = baseX + rampLen;
+      const topY = baseY - rampHeight;
+
+      const s = Math.max(0.08, Math.min(0.9, sim.s));
+      const blockX = baseX + rampLen * s;
+      const blockY = baseY - rampHeight * s;
+
+      const normalX = Math.sin(data.theta);
+      const normalY = -Math.cos(data.theta);
+      const upSlopeX = -Math.cos(data.theta);
+      const upSlopeY = -Math.sin(data.theta);
+      const sign = Math.sign(data.F || 1);
+      const netX = Math.cos(data.theta) * sign;
+      const netY = -Math.sin(data.theta) * sign;
+
+      const forceScale = 5.7;
+      const netScale = 22;
+
+      const trail = sim.trail.map((q, index) => {
+        const x = baseX + rampLen * q;
+        const y = baseY - rampHeight * q;
+        const opacity = 0.12 + index / Math.max(1, sim.trail.length) * 0.58;
+        return `<circle cx="${x}" cy="${y}" r="${4 + index * 0.32}" fill="#ff8b3d" opacity="${opacity.toFixed(2)}" />`;
+      }).join("");
+
+      const block = `
+        <g transform="translate(${blockX} ${blockY}) rotate(${-data.thetaDeg})">
+          <rect x="-48" y="-38" width="96" height="76" rx="14" fill="#fff" stroke="#1f2b3a" stroke-width="6" />
+          <circle cx="-28" cy="51" r="9" fill="#1f2b3a" />
+          <circle cx="28" cy="51" r="9" fill="#1f2b3a" />
+        </g>
+      `;
+
+      els.drawing.innerHTML = `
+        <text x="42" y="48" font-size="22" fill="#62717d">斜面角、受力箭头、滑块运动状态实时变化</text>
+        <polygon points="${baseX},${baseY} ${topX},${topY} ${topX},${baseY}"
+          fill="#dceaff" stroke="#1f2b3a" stroke-width="5" />
+        <line x1="${baseX}" y1="${baseY}" x2="${topX}" y2="${topY}"
+          stroke="#1f2b3a" stroke-width="6" stroke-linecap="round" />
+        <line x1="${baseX + 10}" y1="${baseY + 24}" x2="${topX}" y2="${baseY + 24}"
+          stroke="#c5d6e3" stroke-width="5" stroke-linecap="round" />
+        <path d="M${baseX + 72} ${baseY} A72 72 0 0 0 ${baseX + 65} ${baseY - 34}"
+          fill="none" stroke="#ff8b3d" stroke-width="4" />
+        <text x="${baseX + 82}" y="${baseY - 18}" fill="#ff8b3d" font-size="22" font-weight="900">θ</text>
+        ${trail}
+        ${block}
+        ${arrow(blockX, blockY, blockX, blockY + Math.min(128, data.G * forceScale), "#2457c5", "arrowBlue", "G", 10, 18)}
+        ${arrow(blockX, blockY, blockX + normalX * Math.min(150, data.N * forceScale), blockY + normalY * Math.min(150, data.N * forceScale), "#1f8a70", "arrowGreen", "N")}
+        ${arrow(blockX, blockY, blockX + upSlopeX * Math.min(132, data.f * forceScale), blockY + upSlopeY * Math.min(132, data.f * forceScale), "#d63f64", "arrowRose", "f", -28, -8)}
+        ${arrow(blockX, blockY, blockX + netX * Math.min(150, Math.abs(data.F) * netScale + 24), blockY + netY * Math.min(150, Math.abs(data.F) * netScale + 24), "#ff8b3d", "arrowOrange", "F")}
+      `;
+    }
+
+    function resetMotion() {
+      sim.s = 0.18;
+      sim.v = 0.10;
+      sim.trail = [];
+      sim.last = performance.now();
+    }
+
+    function updateAll() {
+      const data = model();
+      updateText(data);
+      draw(data);
+    }
+
+    function animate(now) {
+      if (!sim.last) sim.last = now;
+      const dt = Math.min(0.045, (now - sim.last) / 1000);
+      sim.last = now;
+
+      const data = model();
+
+      if (sim.playing) {
+        const scaledA = data.a / 16;
+        sim.v += scaledA * dt;
+        sim.s += sim.v * dt;
+
+        if (sim.s > 0.92 || sim.s < 0.08) {
+          sim.s = 0.18;
+          sim.v = data.a >= 0 ? 0.10 : 0.28;
+          sim.trail = [];
+        }
+
+        sim.trail.push(sim.s);
+        if (sim.trail.length > 18) sim.trail.shift();
+      }
+
+      updateText(data);
+      draw(data);
+      requestAnimationFrame(animate);
+    }
+
+    for (const input of [els.m, els.theta, els.mu, els.g]) {
+      input.addEventListener("input", () => {
+        resetMotion();
+        updateAll();
+      });
+    }
+
+    els.playPause.addEventListener("click", () => {
+      sim.playing = !sim.playing;
+      els.playPause.textContent = sim.playing ? "暂停" : "播放";
+      sim.last = performance.now();
+    });
+
+    els.reset.addEventListener("click", () => {
+      resetMotion();
+      updateAll();
+    });
+
+    resetMotion();
+    updateAll();
+    requestAnimationFrame(animate);
+  </script>
 </body>
 </html>
