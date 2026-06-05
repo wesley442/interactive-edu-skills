@@ -1,5 +1,7 @@
 # Interactive Edu Skills
 
+[简体中文](README.zh-CN.md) | English
+
 Open-source AI skills for generating interactive educational problem pages.
 
 This repository is designed for two use cases:
