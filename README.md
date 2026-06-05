@@ -7,7 +7,7 @@ Open-source AI skills for generating interactive educational problem pages.
 This repository is designed for two use cases:
 
 1. Installable local-agent skills: each folder under `skills/` contains a standard `SKILL.md` that local models or coding agents can load and execute.
-2. Marketplace publishing assets: each skill also includes YouMind-ready copy, icons, and showcase images.
+2. Runnable educational artifacts: bundled scripts generate self-contained interactive HTML pages that can be opened directly in a browser.
 
 The long-term goal is to grow a reusable skill library for math, physics, chemistry, biology, and other subjects where a model can generate not only explanations, but also runnable interactive HTML pages.
 
@@ -27,18 +27,15 @@ interactive-edu-skills/
 ├── skills/
 │   ├── interactive-geometry/
 │   │   ├── SKILL.md
-│   │   ├── scripts/
-│   │   └── references/
+│   │   ├── assets/
+│   │   └── scripts/
 │   └── high-school-interactive-mechanics/
 │       ├── SKILL.md
-│       ├── scripts/
-│       └── references/
-├── assets/
-│   ├── interactive-geometry/
-│   └── high-school-interactive-mechanics/
+│       ├── assets/
+│       └── scripts/
 ├── docs/
 │   ├── adding-a-skill.md
-│   └── youmind-publishing.md
+│   └── installation.md
 └── examples/
 ```
 
@@ -79,12 +76,6 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --template square-pyramid \
   --output examples/square-pyramid.html
 ```
-
-## Publishing Assets
-
-Icons and showcase images live under `assets/`. Each asset set includes PNG files for direct upload and SVG sources for editing.
-
-See [docs/youmind-publishing.md](docs/youmind-publishing.md) for the skill form copy.
 
 ## Roadmap
 

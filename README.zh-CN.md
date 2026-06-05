@@ -7,7 +7,7 @@
 这个仓库面向两个使用场景：
 
 1. 本地 agent/model 可安装的技能：`skills/` 下的每个目录都包含标准 `SKILL.md`，可被支持 Agent Skills 的本地模型或编码 agent 加载与执行。
-2. 平台发布素材：每个技能也配套 YouMind 上架文案、图标和展示图，方便发布到技能市场或内容平台。
+2. 可运行的教育产物：内置脚本可以生成自包含互动 HTML 页面，直接在浏览器中打开使用。
 
 长期目标是把它扩展成一个可复用的教育技能库，覆盖数学、物理、化学、生物等学科。模型不仅能生成讲解，还能生成可运行的互动 HTML 教学页面。
 
@@ -27,19 +27,15 @@ interactive-edu-skills/
 ├── skills/
 │   ├── interactive-geometry/
 │   │   ├── SKILL.md
-│   │   ├── scripts/
-│   │   └── references/
+│   │   ├── assets/
+│   │   └── scripts/
 │   └── high-school-interactive-mechanics/
 │       ├── SKILL.md
-│       ├── scripts/
-│       └── references/
-├── assets/
-│   ├── interactive-geometry/
-│   └── high-school-interactive-mechanics/
+│       ├── assets/
+│       └── scripts/
 ├── docs/
 │   ├── adding-a-skill.md
-│   ├── installation.md
-│   └── youmind-publishing.md
+│   └── installation.md
 └── examples/
 ```
 
@@ -87,12 +83,6 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
 - [examples/incline-friction.html](examples/incline-friction.html)
 - [examples/projectile-motion.html](examples/projectile-motion.html)
 - [examples/circular-motion.html](examples/circular-motion.html)
-
-## 发布素材
-
-图标和展示图位于 `assets/`。每套素材都包含可直接上传的 PNG 文件，以及便于二次编辑的 SVG 源文件。
-
-YouMind 表单文案见 [docs/youmind-publishing.md](docs/youmind-publishing.md)，各技能目录下的 `references/youmind-form.md` 也保留了对应技能的上架内容。
 
 ## 路线图
 

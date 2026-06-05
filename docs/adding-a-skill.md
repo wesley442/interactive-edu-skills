@@ -7,9 +7,8 @@ Use this checklist when adding a new subject skill.
 ```text
 skills/<skill-name>/
 ├── SKILL.md
-├── scripts/
-├── references/
-└── assets/
+├── assets/
+└── scripts/
 ```
 
 `SKILL.md` should be Claude-compatible:
@@ -31,19 +30,14 @@ Add Codex/OpenAI UI metadata:
 skills/<skill-name>/agents/openai.yaml
 ```
 
-Add marketplace or publishing copy:
-
-```text
-skills/<skill-name>/references/youmind-form.md
-```
-
 Add one deterministic runnable script whenever possible. A useful skill should be able to produce an artifact, not only instructions.
+
+Use `references/` only when the skill needs extra domain notes, schemas, policies, or long examples that should not live in `SKILL.md`.
 
 ## Design Principles
 
 - Keep `SKILL.md` concise.
-- Put long platform copy in `references/`.
 - Put reusable code in `scripts/`.
-- Put icons and showcase images in `assets/`.
+- Put skill-local icons or reusable visual inputs in `assets/`.
 - Prefer self-contained HTML for interactive educational demos.
 - Add variable ranges and edge-state handling for simulations.

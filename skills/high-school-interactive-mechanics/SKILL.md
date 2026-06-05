@@ -71,7 +71,3 @@ When generating HTML:
 - Left: sliders, current values, answer, derivation.
 - Right: animation or force diagram.
 - Bottom: common mistakes and variant problem.
-
-## YouMind Publishing Copy
-
-See `references/youmind-form.md`.

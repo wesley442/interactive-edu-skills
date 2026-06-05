@@ -67,7 +67,3 @@ When generating HTML:
 - Left: problem, answer, derivation, step controls.
 - Right: geometry diagram with highlighted objects.
 - Bottom: common mistakes and variant problem.
-
-## YouMind Publishing Copy
-
-See `references/youmind-form.md`.
