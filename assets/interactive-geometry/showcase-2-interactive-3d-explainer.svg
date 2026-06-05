@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1280" viewBox="0 0 1600 1280">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1600" y2="1280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f7f2e8"/>
+      <stop offset="0.42" stop-color="#f8fbfc"/>
+      <stop offset="1" stop-color="#e4effa"/>
+    </linearGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M56 0H0V56" fill="none" stroke="#cfdbe6" stroke-width="1" opacity="0.55"/>
+    </pattern>
+    <filter id="soft" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#213043" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="1280" fill="url(#paper)"/>
+  <rect width="1600" height="1280" fill="url(#grid)" opacity="0.5"/>
+  <circle cx="1324" cy="124" r="280" fill="#ffdca8" opacity="0.36"/>
+  <circle cx="170" cy="1120" r="250" fill="#bfe6df" opacity="0.42"/>
+  <g transform="translate(90 76)">
+    <rect x="0" y="0" width="1420" height="1128" rx="42" fill="#fbfcfd" stroke="#dbe3ea" filter="url(#soft)"/>
+    <rect x="0" y="0" width="1420" height="118" rx="42" fill="#263244"/>
+    <rect x="0" y="76" width="1420" height="42" fill="#263244"/>
+    <text x="52" y="72" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="38" font-weight="800" fill="#ffffff">从题目到互动讲解页</text>
+    <text x="1120" y="70" font-family="Georgia,serif" font-size="28" font-weight="700" fill="#ffd18b">Geo Skill</text>
+    <text x="54" y="166" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="24" fill="#5c6b77">不是只给答案，而是把空间关系做成看得见的步骤</text>
+    
+    
+  <g>
+    <rect x="54" y="210" width="394" height="848" rx="26" fill="#ffffff" stroke="#dbe3ea" stroke-width="2"/>
+    <text x="84" y="262" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="29" font-weight="700" fill="#1d2b3a">题面与条件</text>
+    <text x="84" y="298" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="18" fill="#6d7c88">自动抽取几何对象</text>
+    
+      <text x="92" y="360" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="25" font-weight="800" fill="#253244">正方体 ABCD-A₁B₁C₁D₁</text>
+      <text x="92" y="404" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="21" fill="#62717d">求 AC₁ 与 BD 所成角。</text>
+      
+        <rect x="92" y="490" width="318" height="56" rx="16" fill="#f2f6f8" stroke="#dbe3ea"/>
+        <text x="118" y="526" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="700" fill="#253244">点：A, B, C, D, C₁</text>
+        <rect x="92" y="572" width="318" height="56" rx="16" fill="#f2f6f8" stroke="#dbe3ea"/>
+        <text x="118" y="608" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="700" fill="#253244">线：AC₁, BD</text>
+        <rect x="92" y="654" width="318" height="56" rx="16" fill="#fff3de" stroke="#dbe3ea"/>
+        <text x="118" y="690" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="700" fill="#253244">目标：异面直线夹角</text>
+        <rect x="92" y="736" width="318" height="56" rx="16" fill="#f2f6f8" stroke="#dbe3ea"/>
+        <text x="118" y="772" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="700" fill="#253244">方法：平移 + 向量</text>
+    
+  </g>
+    <g transform="translate(486 210)">
+      <rect width="448" height="848" rx="26" fill="#253244"/>
+      <text x="34" y="58" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="29" font-weight="800" fill="#fff">3D 观察区</text>
+      <text x="34" y="94" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="18" fill="#b9c6d1">旋转视角，看清异面直线</text>
+      <rect x="36" y="136" width="376" height="562" rx="24" fill="#f5fbff"/>
+      
+  <g>
+    <polygon points="51.80000000000001,337.8 281.4,272.20000000000005 437.2,380.44 207.6,455.88" fill="#eef6f7" stroke="#263244" stroke-width="4.1"/>
+    <polygon points="51.80000000000001,337.8 207.6,455.88 209.24,634.64 51.80000000000001,531.3199999999999" fill="#f9fbfc" stroke="#263244" stroke-width="4.1"/>
+    <polygon points="207.6,455.88 437.2,380.44 437.2,565.76 209.24,634.64" fill="#deebff" stroke="#263244" stroke-width="4.1"/>
+    <path d="M51.80000000000001,531.3199999999999 L281.4,457.52 L437.2,565.76 M281.4,272.20000000000005 L281.4,457.52" fill="none" stroke="#263244" stroke-width="4.1" stroke-dasharray="9.84 8.2" opacity="0.65"/>
+    <path d="M51.80000000000001,337.8 L437.2,565.76" stroke="#d63f64" stroke-width="8.2" stroke-linecap="round"/>
+    <path d="M281.4,272.20000000000005 L209.24,634.64" stroke="#ff9f1c" stroke-width="8.2" stroke-linecap="round"/>
+    <path d="M127.24000000000001,378.8 C189.56,368.96 233.84,392.74 263.36,431.28" fill="none" stroke="#2457c5" stroke-width="6.56" stroke-linecap="round"/>
+  </g>
+      <rect x="44" y="730" width="120" height="48" rx="24" fill="#9de1d5"/>
+      <text x="74" y="761" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="800" fill="#253244">播放</text>
+      <rect x="180" y="730" width="170" height="48" rx="24" fill="#ffffff" opacity="0.16"/>
+      <text x="214" y="761" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="700" fill="#fff">旋转视角</text>
+    </g>
+    
+  <g>
+    <rect x="972" y="210" width="366" height="848" rx="26" fill="#ffffff" stroke="#dbe3ea" stroke-width="2"/>
+    <text x="1002" y="262" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="29" font-weight="700" fill="#1d2b3a">分步解析</text>
+    <text x="1002" y="298" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="18" fill="#6d7c88">每一步对应一个画面动作</text>
+    
+      
+        <g transform="translate(1012 360)">
+          <text x="0" y="0" font-family="Georgia,serif" font-size="38" font-weight="800" fill="#cad5df">01</text>
+          <text x="0" y="42" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#253244">把 BD 平移到过 A 的位置</text>
+          <path d="M0 72H284" stroke="#dbe3ea" stroke-width="2"/>
+        </g>
+        <g transform="translate(1012 488)">
+          <text x="0" y="0" font-family="Georgia,serif" font-size="38" font-weight="800" fill="#ff8b3d">02</text>
+          <text x="0" y="42" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#253244">写出 AC₁ 与平移后直线的方向向量</text>
+          <path d="M0 72H284" stroke="#dbe3ea" stroke-width="2"/>
+        </g>
+        <g transform="translate(1012 616)">
+          <text x="0" y="0" font-family="Georgia,serif" font-size="38" font-weight="800" fill="#cad5df">03</text>
+          <text x="0" y="42" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#253244">用点积公式求夹角余弦</text>
+          <path d="M0 72H284" stroke="#dbe3ea" stroke-width="2"/>
+        </g>
+        <g transform="translate(1012 744)">
+          <text x="0" y="0" font-family="Georgia,serif" font-size="38" font-weight="800" fill="#cad5df">04</text>
+          <text x="0" y="42" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="22" font-weight="700" fill="#253244">标注最终角度与易错点</text>
+          <path d="M0 72H284" stroke="#dbe3ea" stroke-width="2"/>
+        </g>
+    
+  </g>
+  
+  </g>
+</svg>

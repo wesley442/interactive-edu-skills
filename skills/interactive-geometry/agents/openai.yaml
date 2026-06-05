@@ -1,0 +1,10 @@
+interface:
+  display_name: "Interactive Geometry"
+  short_description: "Generate visual geometry explainers and HTML pages"
+  icon_small: "./assets/icon.png"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#2457C5"
+  default_prompt: "Use $interactive-geometry to generate a self-contained HTML explainer for a square-pyramid line-plane angle problem."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>斜面摩擦力互动题页</title>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #213043;
+      --muted: #62717d;
+      --line: #d9e3eb;
+      --panel: #ffffff;
+      --soft: #f2f7fa;
+      --blue: #2457c5;
+      --green: #1f8a70;
+      --rose: #d63f64;
+      --orange: #ff8b3d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(135deg, #fff4dc 0%, #f8fbfc 45%, #e4effa 100%);
+      min-height: 100vh;
+    }
+    .app { max-width: 1180px; margin: 0 auto; padding: 28px; }
+    header { margin-bottom: 20px; }
+    h1 { margin: 0 0 8px; font-size: 34px; }
+    .subtitle { color: var(--muted); font-size: 18px; }
+    .grid { display: grid; grid-template-columns: 380px 1fr; gap: 20px; align-items: stretch; }
+    .panel {
+      background: rgba(255,255,255,.92);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(33,48,67,.12);
+      padding: 22px;
+    }
+    label { display: grid; gap: 8px; margin: 18px 0; font-weight: 700; }
+    .row { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-weight: 600; }
+    input[type="range"] { width: 100%; accent-color: var(--green); }
+    .result {
+      background: var(--ink);
+      color: #b9f1e7;
+      border-radius: 14px;
+      padding: 16px 18px;
+      font: 700 26px Georgia, serif;
+      margin: 18px 0;
+    }
+    .status {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 8px 14px;
+      color: white;
+      background: var(--green);
+      font-weight: 800;
+      margin: 8px 0 16px;
+    }
+    .formula { color: var(--ink); line-height: 1.8; }
+    svg { width: 100%; height: 560px; background: #eef6fb; border-radius: 18px; border: 1px solid var(--line); }
+    .note { color: var(--muted); line-height: 1.7; }
+    button { border: 0; border-radius: 999px; padding: 10px 16px; background: var(--ink); color: white; font-weight: 800; cursor: pointer; }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } svg { height: 420px; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>斜面摩擦力互动题页</h1>
+      <div class="subtitle">调节质量、斜面角度和摩擦因数，实时观察受力图与加速度。</div>
+    </header>
+    <section class="grid">
+      <aside class="panel">
+        <h2>题目</h2>
+        <p class="note">质量为 $m$ 的小物块放在倾角为 $\theta$ 的粗糙斜面上，动摩擦因数为 $\mu$。若物块沿斜面方向运动，求沿斜面方向的加速度。</p>
+        <label><span class="row"><span>质量 m</span><output id="mOut"></output></span><input id="m" type="range" min="0.5" max="5" step="0.1" value="2"></label>
+        <label><span class="row"><span>角度 θ</span><output id="thetaOut"></output></span><input id="theta" type="range" min="5" max="55" step="1" value="30"></label>
+        <label><span class="row"><span>摩擦因数 μ</span><output id="muOut"></output></span><input id="mu" type="range" min="0" max="0.8" step="0.01" value="0.2"></label>
+        <label><span class="row"><span>重力加速度 g</span><output id="gOut"></output></span><input id="g" type="range" min="9.0" max="10.0" step="0.01" value="9.8"></label>
+        <div class="result" id="answer"></div>
+        <div class="status" id="status"></div>
+        <div class="formula">$$N=mg\cos\theta$$ $$f=\mu N$$ $$a=g(\sin\theta-\mu\cos\theta)$$</div>
+      </aside>
+      <section class="panel">
+        <svg id="scene" viewBox="0 0 720 560" role="img" aria-label="Incline force diagram">
+          <defs>
+            <marker id="arrowB" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto"><path d="M2 2L14 8L2 14Z" fill="#2457c5"/></marker>
+            <marker id="arrowG" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto"><path d="M2 2L14 8L2 14Z" fill="#1f8a70"/></marker>
+            <marker id="arrowR" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto"><path d="M2 2L14 8L2 14Z" fill="#d63f64"/></marker>
+            <marker id="arrowO" markerWidth="16" markerHeight="16" refX="14" refY="8" orient="auto"><path d="M2 2L14 8L2 14Z" fill="#ff8b3d"/></marker>
+          </defs>
+          <g id="drawing"></g>
+        </svg>
+        <p class="note">蓝色是重力，绿色是支持力，红色是摩擦力，橙色是沿斜面合力方向。</p>
+      </section>
+    </section>
+  </main>
+  <script>
+const ids = ['m','theta','mu','g'];
+for (const id of ids) document.getElementById(id).addEventListener('input', update);
+function line(x1,y1,x2,y2,color,marker,label){
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="7" stroke-linecap="round" marker-end="url(#${marker})"/><text x="${x2+8}" y="${y2+4}" font-size="22" font-weight="800" fill="${color}">${label}</text>`;
+}
+function update(){
+  const m = +document.getElementById('m').value;
+  const theta = +document.getElementById('theta').value;
+  const mu = +document.getElementById('mu').value;
+  const g = +document.getElementById('g').value;
+  const rad = theta * Math.PI / 180;
+  const N = m*g*Math.cos(rad);
+  const f = mu*N;
+  const a = g*(Math.sin(rad)-mu*Math.cos(rad));
+  mOut.textContent = `${m.toFixed(1)} kg`;
+  thetaOut.textContent = `${theta.toFixed(0)}°`;
+  muOut.textContent = mu.toFixed(2);
+  gOut.textContent = `${g.toFixed(2)} m/s²`;
+  answer.textContent = `a = ${a.toFixed(2)} m/s²`;
+  status.textContent = Math.abs(a) < 0.05 ? '临界状态：加速度约为 0' : (a > 0 ? '沿斜面向下加速' : '合力沿斜面向上');
+  status.style.background = Math.abs(a) < 0.05 ? '#ff8b3d' : (a > 0 ? '#1f8a70' : '#d63f64');
+  const baseX=110, baseY=440, len=500, height=Math.tan(rad)*len;
+  const topX=baseX+len, topY=baseY-height;
+  const t = Math.max(0.15, Math.min(0.85, 0.5 + a/18));
+  const bx=baseX+len*t, by=baseY-height*t;
+  const block = `<g transform="translate(${bx} ${by}) rotate(${-theta})"><rect x="-42" y="-34" width="84" height="68" rx="12" fill="#fff" stroke="#213043" stroke-width="6"/><circle cx="-24" cy="45" r="8" fill="#213043"/><circle cx="24" cy="45" r="8" fill="#213043"/></g>`;
+  const forceScale = 7;
+  const nx = Math.sin(rad), ny = -Math.cos(rad);
+  const downX = 0, downY = 1;
+  const upSlopeX = -Math.cos(rad), upSlopeY = -Math.sin(rad);
+  const alongX = Math.cos(rad) * Math.sign(a || 1), alongY = -Math.sin(rad) * Math.sign(a || 1);
+  drawing.innerHTML = `<polygon points="${baseX},${baseY} ${topX},${topY} ${topX},${baseY}" fill="#deebff" stroke="#213043" stroke-width="4"/>
+    <line x1="${baseX}" y1="${baseY}" x2="${topX}" y2="${topY}" stroke="#213043" stroke-width="5"/>
+    ${block}
+    ${line(bx,by,bx+downX*95,by+downY*95,'#2457c5','arrowB','mg')}
+    ${line(bx,by,bx+nx*Math.min(150,N*forceScale),by+ny*Math.min(150,N*forceScale),'#1f8a70','arrowG','N')}
+    ${line(bx,by,bx+upSlopeX*Math.min(120,f*forceScale),by+upSlopeY*Math.min(120,f*forceScale),'#d63f64','arrowR','f')}
+    ${line(bx,by,bx+alongX*Math.min(130,Math.abs(a)*22+24),by+alongY*Math.min(130,Math.abs(a)*22+24),'#ff8b3d','arrowO','F')}`;
+}
+update();
+</script>
+</body>
+</html>

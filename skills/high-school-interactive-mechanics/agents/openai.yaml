@@ -1,0 +1,10 @@
+interface:
+  display_name: "High-School Mechanics"
+  short_description: "Generate adjustable force diagrams and motion demos"
+  icon_small: "./assets/icon.png"
+  icon_large: "./assets/icon.svg"
+  brand_color: "#1F8A70"
+  default_prompt: "Use $high-school-interactive-mechanics to generate an incline-friction HTML simulation with adjustable variables."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="96" y1="48" x2="930" y2="940" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff4dc"/>
+      <stop offset="0.52" stop-color="#e9f7f5"/>
+      <stop offset="1" stop-color="#dbe9ff"/>
+    </linearGradient>
+    <linearGradient id="plane" x1="200" y1="710" x2="816" y2="414" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1f8a70"/>
+      <stop offset="0.52" stop-color="#2457c5"/>
+      <stop offset="1" stop-color="#ff8b3d"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="24" stdDeviation="30" flood-color="#263244" flood-opacity="0.22"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="34" markerHeight="34" refX="30" refY="17" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M4 4L30 17L4 30Z" fill="#2457c5"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="34" markerHeight="34" refX="30" refY="17" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M4 4L30 17L4 30Z" fill="#d63f64"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="34" markerHeight="34" refX="30" refY="17" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M4 4L30 17L4 30Z" fill="#1f8a70"/>
+    </marker>
+  </defs>
+  <rect width="1024" height="1024" rx="210" fill="url(#bg)"/>
+  <g filter="url(#shadow)">
+    <path d="M164 742H870L870 668H318Z" fill="#ffffff" opacity="0.82"/>
+    <path d="M180 734L836 420" stroke="url(#plane)" stroke-width="54" stroke-linecap="round"/>
+    <path d="M198 774H866" stroke="#2b3442" stroke-width="30" stroke-linecap="round" opacity="0.22"/>
+    <g transform="translate(438 471) rotate(-25)">
+      <rect x="-90" y="-70" width="180" height="140" rx="28" fill="#ffffff" stroke="#2b3442" stroke-width="26"/>
+      <circle cx="-46" cy="83" r="22" fill="#2b3442"/>
+      <circle cx="48" cy="83" r="22" fill="#2b3442"/>
+    </g>
+  </g>
+  <line x1="486" y1="454" x2="486" y2="276" stroke="#2457c5" stroke-width="28" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+  <line x1="486" y1="454" x2="360" y2="512" stroke="#d63f64" stroke-width="28" stroke-linecap="round" marker-end="url(#arrowRose)"/>
+  <line x1="486" y1="454" x2="642" y2="382" stroke="#1f8a70" stroke-width="28" stroke-linecap="round" marker-end="url(#arrowGreen)"/>
+  <path d="M652 260c72 22 122 72 136 144 18 95-37 174-123 210" fill="none" stroke="#ff8b3d" stroke-width="24" stroke-linecap="round" stroke-dasharray="1 42"/>
+  <circle cx="702" cy="280" r="26" fill="#ff8b3d"/>
+  <rect x="272" y="826" width="480" height="42" rx="21" fill="#ffffff" opacity="0.82"/>
+  <circle cx="424" cy="847" r="32" fill="#2457c5"/>
+  <circle cx="624" cy="847" r="32" fill="#d63f64"/>
+</svg>

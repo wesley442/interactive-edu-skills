@@ -1,0 +1,77 @@
+---
+name: high-school-interactive-mechanics
+description: Generate high-school mechanics problems, force diagrams, adjustable simulations, and self-contained interactive HTML pages.
+---
+
+# High-School Interactive Mechanics
+
+Use this skill when the user asks for high-school physics mechanics problems, force analysis, motion visualization, variable sliders, or runnable HTML simulations.
+
+## Language
+
+Default to Simplified Chinese for user-facing explanations, generated problems, classroom notes, and HTML UI text, unless the user explicitly requests another language. Keep file names, script names, frontmatter, and machine-readable metadata in English.
+
+## Core Output
+
+Default response:
+
+1. Problem statement.
+2. Positioning: grade, difficulty, knowledge points, target ability.
+3. Physical model: object of study, motion process, knowns, unknowns, constraints.
+4. Force analysis.
+5. Step-by-step derivation.
+6. Answer.
+7. Visualization or animation plan.
+8. Common mistakes.
+9. Variant problem.
+
+If the user asks for HTML, interactive page, animation, adjustable variables, sliders, or simulation, generate a self-contained HTML file.
+
+## Supported First-Version Templates
+
+- Incline friction: adjustable mass, angle, friction coefficient, gravity.
+- Projectile motion: adjustable initial velocity, height, gravity.
+- Circular motion: adjustable mass, radius, speed.
+- Connected bodies and springs can be generated as explanations; interactive scripts should be added as templates before claiming deterministic local execution.
+
+For a runnable local example, use:
+
+```bash
+python3 scripts/generate_mechanics_html.py --template incline --output incline-friction.html
+```
+
+## Physics Rules
+
+- Always identify the object of study before force analysis.
+- Friction direction must follow relative motion or relative motion tendency.
+- Distinguish velocity, acceleration, force, and displacement directions.
+- Explain why each equation applies.
+- Do not treat centripetal force as an extra new force; explain it as net force or the effect of a concrete force.
+- Include units and reasonable variable ranges.
+- Mention static, critical, no-motion, or direction-change states when relevant.
+
+## HTML Requirements
+
+When generating HTML:
+
+- Produce one complete file with inline CSS and JS.
+- The page must open directly in a browser.
+- Use MathJax for formulas.
+- Use SVG or Canvas for 2D diagrams and animations.
+- Include sliders for adjustable variables.
+- Variable changes must update formulas, numeric results, force arrows, motion state, and the diagram.
+- Use `requestAnimationFrame` for animation when motion is shown.
+- Clamp variables to reasonable ranges.
+- Clearly display critical states, such as no sliding, zero acceleration, or direction change.
+- Keep the layout readable for classroom projection.
+
+## Suggested Layout
+
+- Top: title and problem.
+- Left: sliders, current values, answer, derivation.
+- Right: animation or force diagram.
+- Bottom: common mistakes and variant problem.
+
+## YouMind Publishing Copy
+
+See `references/youmind-form.md`.
