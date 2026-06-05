@@ -22,78 +22,226 @@ def page(title: str, body: str, script: str) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <script>
-    window.MathJax = {{ tex: {{ inlineMath: [['$', '$'], ['\\\\(', '\\\\)']] }} }};
+    window.MathJax = {{ tex: {{ inlineMath: [['$', '$'], ['\\\\(', '\\\\)']], displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']] }} }};
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     :root {{
-      color-scheme: light;
-      --ink: #213043;
-      --muted: #62717d;
-      --line: #d9e3eb;
-      --panel: #ffffff;
-      --soft: #f2f7fa;
-      --blue: #2457c5;
-      --green: #1f8a70;
-      --rose: #d63f64;
-      --orange: #ff8b3d;
+      --bg: #111827;
+      --panel: #1c2434;
+      --card: rgba(255,255,255,0.07);
+      --line: rgba(255,255,255,0.12);
+      --text: #e8edf6;
+      --muted: #9aa7b8;
+      --blue: #64b5f6;
+      --green: #66bb6a;
+      --red: #ef5350;
+      --orange: #ffa726;
+      --purple: #ce93d8;
+      --cyan: #26c6da;
+      --gold: #ffd54f;
     }}
-    * {{ box-sizing: border-box; }}
     body {{
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: var(--ink);
-      background: linear-gradient(135deg, #fff4dc 0%, #f8fbfc 45%, #e4effa 100%);
+      font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 15% 15%, rgba(100,181,246,.16), transparent 30%),
+                  radial-gradient(circle at 90% 85%, rgba(102,187,106,.12), transparent 34%),
+                  linear-gradient(135deg, #151827 0%, #17213a 54%, #0e3555 100%);
       min-height: 100vh;
+      overflow-x: hidden;
     }}
-    .app {{ max-width: 1180px; margin: 0 auto; padding: 28px; }}
-    header {{ margin-bottom: 20px; }}
-    h1 {{ margin: 0 0 8px; font-size: 34px; }}
-    h2 {{ margin-top: 0; }}
-    .subtitle {{ color: var(--muted); font-size: 18px; }}
-    .grid {{ display: grid; grid-template-columns: 380px 1fr; gap: 20px; align-items: stretch; }}
-    .panel {{
-      background: rgba(255,255,255,.92);
+    .app {{ min-height: 100vh; display: flex; flex-direction: column; }}
+    .header {{
+      padding: 14px 22px 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,0.045);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }}
+    .badge {{
+      background: linear-gradient(135deg, #1565c0, #7c5cfc);
+      color: white;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      letter-spacing: .5px;
+    }}
+    h1 {{ font-size: 20px; letter-spacing: .5px; color: var(--text); }}
+    .subtitle {{ color: var(--muted); font-size: 13px; margin-left: auto; }}
+    .main-layout {{ flex: 1; display: flex; min-height: 0; }}
+    .left-panel {{
+      width: 40%;
+      min-width: 390px;
+      max-width: 540px;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-right: 1px solid var(--line);
+    }}
+    .right-panel {{
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }}
+    .left-panel::-webkit-scrollbar, .right-panel::-webkit-scrollbar {{ width: 5px; }}
+    .left-panel::-webkit-scrollbar-thumb, .right-panel::-webkit-scrollbar-thumb {{ background: rgba(100,181,246,.4); border-radius: 4px; }}
+    .card {{
+      background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 18px 45px rgba(33,48,67,.12);
-      padding: 22px;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.23);
+      backdrop-filter: blur(10px);
     }}
-    label {{ display: grid; gap: 8px; margin: 18px 0; font-weight: 700; }}
-    .row {{ display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-weight: 600; }}
-    input[type="range"] {{ width: 100%; accent-color: var(--green); }}
-    .result {{
-      background: var(--ink);
-      color: #b9f1e7;
-      border-radius: 14px;
-      padding: 16px 18px;
-      font: 700 25px Georgia, serif;
-      margin: 18px 0;
+    .card-title {{
+      font-size: 15px;
+      color: var(--blue);
+      font-weight: 800;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
     }}
-    .status-pill {{
+    .card-title::before {{
+      content: "";
+      width: 4px;
+      height: 16px;
+      background: var(--blue);
+      border-radius: 2px;
       display: inline-block;
-      border-radius: 999px;
-      padding: 8px 14px;
-      color: white;
-      background: var(--green);
-      font-weight: 800;
-      margin: 8px 0 16px;
     }}
-    .formula {{ color: var(--ink); line-height: 1.8; }}
-    svg {{ width: 100%; height: 560px; background: #eef6fb; border-radius: 18px; border: 1px solid var(--line); }}
-    .note {{ color: var(--muted); line-height: 1.7; }}
-    .controls {{ display: flex; gap: 10px; margin: 14px 0 0; flex-wrap: wrap; }}
-    button {{
-      border: 0;
-      border-radius: 999px;
-      padding: 10px 16px;
-      background: var(--ink);
-      color: white;
-      font-weight: 800;
+    .problem-text, .note {{ color: #cbd5e1; line-height: 1.75; font-size: 13px; }}
+    .problem-text strong {{ color: white; }}
+    .slider-group {{ display: flex; flex-direction: column; gap: 11px; }}
+    .slider-item {{ display: flex; flex-direction: column; gap: 5px; }}
+    .slider-label {{ display: flex; justify-content: space-between; color: #b8c4d6; font-size: 13px; }}
+    .slider-label span:last-child {{ color: white; font-weight: 800; font-variant-numeric: tabular-nums; }}
+    input[type=range] {{
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,.16);
+      outline: none;
       cursor: pointer;
     }}
-    button.secondary {{ background: #dce6ee; color: var(--ink); }}
-    @media (max-width: 860px) {{ .grid {{ grid-template-columns: 1fr; }} svg {{ height: 420px; }} }}
+    input[type=range]::-webkit-slider-thumb {{
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 9px rgba(100,181,246,.65);
+    }}
+    .results-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }}
+    .result-item {{
+      background: rgba(255,255,255,.055);
+      border-left: 3px solid var(--blue);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }}
+    .result-label {{ color: var(--muted); font-size: 11px; margin-bottom: 3px; }}
+    .result-value {{ color: white; font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }}
+    .status-box {{
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: .5px;
+      border: 2px solid var(--green);
+      color: var(--green);
+      background: rgba(102,187,106,.15);
+    }}
+    .status-warning {{ border-color: var(--orange); color: var(--orange); background: rgba(255,167,38,.14); }}
+    .tabs {{ display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }}
+    .tab-btn {{
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 6px 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,.05);
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+    }}
+    .tab-btn.active {{ color: var(--blue); border-color: var(--blue); background: rgba(100,181,246,.18); }}
+    .tab-content {{ display: none; }}
+    .tab-content.active {{ display: block; }}
+    .formula-steps {{ display: flex; flex-direction: column; gap: 8px; }}
+    .step {{
+      background: rgba(255,255,255,.045);
+      border-left: 3px solid var(--blue);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #d9e2f1;
+      line-height: 1.65;
+      font-size: 13px;
+    }}
+    .warning-item {{
+      background: rgba(255,167,38,.10);
+      border: 1px solid rgba(255,167,38,.28);
+      color: #ffcc80;
+      border-radius: 8px;
+      padding: 9px 12px;
+      line-height: 1.6;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }}
+    .canvas-wrapper {{
+      flex: 1;
+      min-height: 430px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,.32);
+      overflow: hidden;
+      position: relative;
+    }}
+    canvas {{ width: 100%; height: 100%; display: block; }}
+    .controls {{ display: flex; flex-wrap: wrap; gap: 8px; }}
+    .btn {{
+      border: none;
+      border-radius: 8px;
+      padding: 8px 15px;
+      color: white;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #1565c0, #1976d2);
+      box-shadow: 0 2px 8px rgba(25,118,210,.35);
+    }}
+    .btn-secondary {{ background: rgba(255,255,255,.10); color: var(--text); border: 1px solid var(--line); box-shadow: none; }}
+    .btn-warning {{ background: linear-gradient(135deg, #e65100, #f57c00); }}
+    .variants-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }}
+    .variant-item {{
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 10px;
+      color: #c8d3e0;
+      font-size: 12px;
+      line-height: 1.55;
+    }}
+    .variant-item strong {{ display: block; color: var(--blue); margin-bottom: 4px; }}
+    .data-table {{ width: 100%; border-collapse: collapse; font-size: 12px; }}
+    .data-table th {{ color: var(--blue); background: rgba(100,181,246,.18); padding: 6px 8px; }}
+    .data-table td {{ color: #d1d9e6; padding: 5px 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,.06); }}
+    @media (max-width: 900px) {{
+      body {{ overflow: auto; }}
+      .main-layout {{ flex-direction: column; }}
+      .left-panel {{ width: 100%; max-width: none; min-width: 0; border-right: 0; border-bottom: 1px solid var(--line); }}
+      .right-panel {{ min-height: 560px; }}
+      .variants-grid {{ grid-template-columns: 1fr; }}
+    }}
   </style>
 </head>
 <body>
@@ -111,27 +259,93 @@ def incline() -> str:
 
 
 def projectile() -> str:
-    body = """<header><h1>平抛运动互动题页</h1><div class="subtitle">调节初速度和高度，播放小球沿抛物线运动的过程。</div></header>
-    <section class="grid"><aside class="panel">
-      <h2>题目</h2><p class="note">小球以水平初速度 $v_0$ 从高度 $h$ 处抛出，忽略空气阻力，求落地时间、水平位移和落地速度。</p>
-      <label><span class="row"><span>初速度 v₀</span><output id="vOut"></output></span><input id="v0" type="range" min="2" max="30" step="0.5" value="12"></label>
-      <label><span class="row"><span>高度 h</span><output id="hOut"></output></span><input id="h" type="range" min="2" max="80" step="1" value="20"></label>
-      <label><span class="row"><span>重力加速度 g</span><output id="gOut"></output></span><input id="g" type="range" min="9.0" max="10.0" step="0.01" value="9.8"></label>
-      <div class="result" id="answer"></div>
-      <div class="formula">$$t=\\sqrt{2h/g}$$ $$x=v_0t$$ $$v_y=gt$$</div>
-      <p class="note">易错点：轨迹弯曲不代表水平速度变化。</p>
-    </aside><section class="panel">
-      <svg viewBox="0 0 720 560"><g id="drawing"></g></svg>
-      <div class="controls"><button id="playPause">暂停</button><button id="resetMotion" class="secondary">重置运动</button></div>
-    </section></section>"""
+    body = """<div class="header">
+      <div class="badge">高中物理</div>
+      <h1>平抛运动 · 互动动画</h1>
+      <div class="subtitle">运动分解 · 轨迹动画 · 可调变量</div>
+    </div>
+    <div class="main-layout">
+      <aside class="left-panel">
+        <div class="card">
+          <div class="card-title">题目描述</div>
+          <div class="problem-text">小球以水平初速度 <strong>v₀</strong> 从高度 <strong>h</strong> 处水平抛出，忽略空气阻力。求落地时间、水平位移、落地竖直速度和合速度。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">调节参数</div>
+          <div class="slider-group">
+            <div class="slider-item"><div class="slider-label"><span>初速度 v₀</span><span id="vOut"></span></div><input id="v0" type="range" min="2" max="30" step="0.5" value="12"></div>
+            <div class="slider-item"><div class="slider-label"><span>高度 h</span><span id="hOut"></span></div><input id="h" type="range" min="2" max="80" step="1" value="20"></div>
+            <div class="slider-item"><div class="slider-label"><span>重力加速度 g</span><span id="gOut"></span></div><input id="g" type="range" min="9.0" max="10.0" step="0.01" value="9.8"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">实时计算结果</div>
+          <div class="results-grid">
+            <div class="result-item"><div class="result-label">落地时间 t</div><div class="result-value" id="resT"></div></div>
+            <div class="result-item"><div class="result-label">水平位移 x</div><div class="result-value" id="resX"></div></div>
+            <div class="result-item"><div class="result-label">竖直速度 vy</div><div class="result-value" id="resVy"></div></div>
+            <div class="result-item"><div class="result-label">合速度 v</div><div class="result-value" id="resV"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">运动状态</div>
+          <div class="status-box" id="statusBox"></div>
+        </div>
+        <div class="card">
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('model')">物理模型</button>
+            <button class="tab-btn" onclick="switchTab('formula')">公式推导</button>
+            <button class="tab-btn" onclick="switchTab('warnings')">易错点</button>
+          </div>
+          <div class="tab-content active" id="tab-model">
+            <div class="step">平抛运动可分解为两个互不影响的方向：水平方向匀速直线运动，竖直方向自由落体运动。</div>
+            <div class="step">研究对象是小球；约束条件是初速度水平、空气阻力忽略、竖直初速度为 0。</div>
+          </div>
+          <div class="tab-content" id="tab-formula">
+            <div class="formula-steps">
+              <div class="step">竖直方向：$h=\\frac12gt^2 \\Rightarrow t=\\sqrt{2h/g}$</div>
+              <div class="step">水平方向：$x=v_0t$，所以高度决定飞行时间，初速度决定水平位移。</div>
+              <div class="step">落地时：$v_y=gt$，$v=\\sqrt{v_0^2+v_y^2}$。</div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-warnings">
+            <div class="warning-item">水平速度不变，轨迹变弯不是因为水平方向有加速度。</div>
+            <div class="warning-item">落地时间只由高度和重力加速度决定，与水平初速度无关。</div>
+            <div class="warning-item">合速度方向会逐渐向下偏转，不能把合速度当作水平速度。</div>
+          </div>
+        </div>
+      </aside>
+      <section class="right-panel">
+        <div class="controls">
+          <button class="btn" id="playPause">暂停动画</button>
+          <button class="btn btn-secondary" id="resetMotion">重置运动</button>
+          <button class="btn btn-warning" id="toggleTrace">隐藏轨迹</button>
+        </div>
+        <div class="canvas-wrapper"><canvas id="mainCanvas"></canvas></div>
+        <div class="card">
+          <div class="card-title">变式与课堂提问</div>
+          <div class="variants-grid">
+            <div class="variant-item"><strong>变式 1：高度加倍</strong>落地时间变为原来的 $\\sqrt2$ 倍，水平位移也变为 $\\sqrt2$ 倍。</div>
+            <div class="variant-item"><strong>变式 2：初速度加倍</strong>落地时间不变，水平位移加倍。</div>
+            <div class="variant-item"><strong>课堂提问</strong>为什么小球刚抛出时速度水平，但落地时速度斜向下？</div>
+          </div>
+        </div>
+      </section>
+    </div>"""
     script = r"""
-const projectileMotion = { tau: 0, playing: true, last: 0 };
+const projectileMotion = { tau: 0, playing: true, last: 0, trace: true };
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
 for (const id of ['v0','h','g']) document.getElementById(id).addEventListener('input', () => resetProjectile(true));
 document.getElementById('playPause').addEventListener('click', () => {
   projectileMotion.playing = !projectileMotion.playing;
-  document.getElementById('playPause').textContent = projectileMotion.playing ? '暂停' : '播放';
+  document.getElementById('playPause').textContent = projectileMotion.playing ? '暂停动画' : '播放动画';
 });
 document.getElementById('resetMotion').addEventListener('click', () => resetProjectile(true));
+document.getElementById('toggleTrace').addEventListener('click', () => {
+  projectileMotion.trace = !projectileMotion.trace;
+  document.getElementById('toggleTrace').textContent = projectileMotion.trace ? '隐藏轨迹' : '显示轨迹';
+});
 
 function projectileValues() {
   const v0 = +document.getElementById('v0').value;
@@ -150,37 +364,102 @@ function resetProjectile(drawNow) {
   if (drawNow) drawProjectile();
 }
 
+function resizeCanvas() {
+  const wrapper = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(wrapper.clientWidth * dpr);
+  canvas.height = Math.floor(wrapper.clientHeight * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function drawArrow(x1, y1, x2, y2, color, label) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.hypot(dx, dy);
+  if (len < 2) return;
+  const angle = Math.atan2(dy, dx);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = 3;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 12 * Math.cos(angle - 0.45), y2 - 12 * Math.sin(angle - 0.45));
+  ctx.lineTo(x2 - 12 * Math.cos(angle + 0.45), y2 - 12 * Math.sin(angle + 0.45));
+  ctx.closePath();
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.font = 'bold 13px Segoe UI, Microsoft YaHei';
+  ctx.fillText(label, x2 + 6, y2 - 6);
+  ctx.restore();
+}
+
 function drawProjectile() {
   const v = projectileValues();
   document.getElementById('vOut').textContent = `${v.v0.toFixed(1)} m/s`;
   document.getElementById('hOut').textContent = `${v.h.toFixed(0)} m`;
   document.getElementById('gOut').textContent = `${v.g.toFixed(2)} m/s²`;
-  document.getElementById('answer').textContent = `t=${v.t.toFixed(2)}s, x=${v.x.toFixed(1)}m, v=${v.v.toFixed(1)}m/s`;
-  const originX = 80, originY = 88, groundY = 455;
-  const width = 600;
-  const sx = width / v.x;
+  document.getElementById('resT').textContent = `${v.t.toFixed(2)} s`;
+  document.getElementById('resX').textContent = `${v.x.toFixed(1)} m`;
+  document.getElementById('resVy').textContent = `${v.vy.toFixed(1)} m/s`;
+  document.getElementById('resV').textContent = `${v.v.toFixed(1)} m/s`;
+  document.getElementById('statusBox').textContent = `当前飞行进度 ${(projectileMotion.tau * 100).toFixed(0)}%，水平速度保持 ${v.v0.toFixed(1)} m/s`;
+  resizeCanvas();
+  const W = canvas.parentElement.clientWidth, H = canvas.parentElement.clientHeight;
+  ctx.clearRect(0, 0, W, H);
+  const originX = 72, originY = 80, groundY = H - 64, rightPad = 58;
+  const sx = (W - originX - rightPad) / v.x;
   const sy = (groundY - originY) / v.h;
-  let path = '';
-  for (let i = 0; i <= 48; i++) {
-    const tt = v.t * i / 48;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,.08)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 44) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 44) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  ctx.restore();
+  ctx.fillStyle = 'rgba(100,181,246,.14)';
+  ctx.fillRect(originX - 24, originY - 18, 24, groundY - originY + 18);
+  ctx.fillStyle = 'rgba(255,255,255,.10)';
+  ctx.fillRect(0, groundY, W, H - groundY);
+  ctx.strokeStyle = 'rgba(255,255,255,.35)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(35, groundY);
+  ctx.lineTo(W - 28, groundY);
+  ctx.stroke();
+  ctx.strokeStyle = '#ef5350';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  for (let i = 0; i <= 90; i++) {
+    const tt = v.t * i / 90;
     const px = originX + v.v0 * tt * sx;
     const py = originY + 0.5 * v.g * tt * tt * sy;
-    path += `${i ? 'L' : 'M'}${px.toFixed(1)} ${py.toFixed(1)} `;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
   }
+  if (projectileMotion.trace) ctx.stroke();
   const currentT = v.t * projectileMotion.tau;
   const ballX = originX + v.v0 * currentT * sx;
   const ballY = originY + 0.5 * v.g * currentT * currentT * sy;
   const vyNow = v.g * currentT;
-  document.getElementById('drawing').innerHTML = `
-    <rect x="58" y="70" width="24" height="${groundY - 70}" fill="#d9e3eb"/>
-    <line x1="45" y1="${groundY}" x2="690" y2="${groundY}" stroke="#213043" stroke-width="4"/>
-    <path d="${path}" fill="none" stroke="#d63f64" stroke-width="6" stroke-linecap="round"/>
-    <circle cx="${ballX}" cy="${ballY}" r="15" fill="#ff8b3d"/>
-    <line x1="${ballX}" y1="${ballY}" x2="${ballX + 86}" y2="${ballY}" stroke="#1f8a70" stroke-width="7" stroke-linecap="round"/>
-    <line x1="${ballX}" y1="${ballY}" x2="${ballX}" y2="${ballY + Math.min(120, vyNow * 9 + 18)}" stroke="#2457c5" stroke-width="7" stroke-linecap="round"/>
-    <text x="${ballX + 92}" y="${ballY + 6}" fill="#1f8a70" font-size="22" font-weight="800">vₓ</text>
-    <text x="${ballX + 12}" y="${ballY + Math.min(130, vyNow * 9 + 28)}" fill="#2457c5" font-size="22" font-weight="800">vᵧ</text>
-    <text x="96" y="56" font-size="21" fill="#62717d">小球按平抛方程随时间运动，速度分量同步显示</text>`;
+  ctx.fillStyle = '#ffb74d';
+  ctx.shadowColor = '#ffb74d';
+  ctx.shadowBlur = 16;
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  drawArrow(ballX, ballY, ballX + 78, ballY, '#66bb6a', 'vₓ');
+  drawArrow(ballX, ballY, ballX, ballY + Math.min(118, 16 + vyNow * 6), '#64b5f6', 'vᵧ');
+  drawArrow(ballX, ballY, ballX + 70, ballY + Math.min(112, 16 + vyNow * 5), '#ce93d8', 'v');
+  ctx.fillStyle = '#9aa7b8';
+  ctx.font = '13px Segoe UI, Microsoft YaHei';
+  ctx.fillText(`落地点 x = ${v.x.toFixed(1)} m`, Math.max(originX + 10, W - 210), groundY - 18);
+  ctx.fillText(`h = ${v.h.toFixed(0)} m`, originX + 10, (originY + groundY) / 2);
+  document.getElementById('vOut').textContent = `${v.v0.toFixed(1)} m/s`;
 }
 
 function animateProjectile(now) {
@@ -195,32 +474,104 @@ function animateProjectile(now) {
 resetProjectile(false);
 drawProjectile();
 requestAnimationFrame(animateProjectile);
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick').includes("'" + name + "'")));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+  if (window.MathJax) MathJax.typesetPromise();
+}
 """
     return page("平抛运动互动题页", body, script)
 
 
 def circular() -> str:
-    body = """<header><h1>圆周运动互动题页</h1><div class="subtitle">调节质量、半径和速度，播放小球做圆周运动并观察向心力。</div></header>
-    <section class="grid"><aside class="panel">
-      <h2>题目</h2><p class="note">质量为 $m$ 的小球以速度 $v$ 做半径为 $r$ 的匀速圆周运动，求所需向心力大小。</p>
-      <label><span class="row"><span>质量 m</span><output id="mOut"></output></span><input id="m" type="range" min="0.2" max="5" step="0.1" value="1.5"></label>
-      <label><span class="row"><span>半径 r</span><output id="rOut"></output></span><input id="r" type="range" min="0.5" max="6" step="0.1" value="2"></label>
-      <label><span class="row"><span>速度 v</span><output id="vOut"></output></span><input id="v" type="range" min="0.5" max="12" step="0.1" value="4"></label>
-      <div class="result" id="answer"></div>
-      <div class="formula">$$F=mv^2/r$$ $$a=v^2/r$$</div>
-      <p class="note">向心力不是额外的新力，它是指向圆心的合力效果。</p>
-    </aside><section class="panel">
-      <svg viewBox="0 0 720 560"><g id="drawing"></g></svg>
-      <div class="controls"><button id="playPause">暂停</button><button id="resetMotion" class="secondary">重置运动</button></div>
-    </section></section>"""
+    body = """<div class="header">
+      <div class="badge">高中物理</div>
+      <h1>圆周运动 · 互动模拟</h1>
+      <div class="subtitle">向心加速度 · 向心力 · 周期与角速度</div>
+    </div>
+    <div class="main-layout">
+      <aside class="left-panel">
+        <div class="card">
+          <div class="card-title">题目描述</div>
+          <div class="problem-text">质量为 <strong>m</strong> 的小球以速度 <strong>v</strong> 做半径为 <strong>r</strong> 的匀速圆周运动。求向心加速度、所需向心力、周期和角速度。</div>
+        </div>
+        <div class="card">
+          <div class="card-title">调节参数</div>
+          <div class="slider-group">
+            <div class="slider-item"><div class="slider-label"><span>质量 m</span><span id="mOut"></span></div><input id="m" type="range" min="0.2" max="5" step="0.1" value="1.5"></div>
+            <div class="slider-item"><div class="slider-label"><span>半径 r</span><span id="rOut"></span></div><input id="r" type="range" min="0.5" max="6" step="0.1" value="2"></div>
+            <div class="slider-item"><div class="slider-label"><span>速度 v</span><span id="vOut"></span></div><input id="v" type="range" min="0.5" max="12" step="0.1" value="4"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">实时计算结果</div>
+          <div class="results-grid">
+            <div class="result-item"><div class="result-label">向心加速度 a</div><div class="result-value" id="resA"></div></div>
+            <div class="result-item"><div class="result-label">向心力 F</div><div class="result-value" id="resF"></div></div>
+            <div class="result-item"><div class="result-label">周期 T</div><div class="result-value" id="resT"></div></div>
+            <div class="result-item"><div class="result-label">角速度 ω</div><div class="result-value" id="resW"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">关键结论</div>
+          <div class="status-box" id="statusBox"></div>
+        </div>
+        <div class="card">
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('model')">物理模型</button>
+            <button class="tab-btn" onclick="switchTab('formula')">公式推导</button>
+            <button class="tab-btn" onclick="switchTab('warnings')">易错点</button>
+          </div>
+          <div class="tab-content active" id="tab-model">
+            <div class="step">匀速圆周运动的“匀速”指速率不变，速度方向不断改变，因此仍有加速度。</div>
+            <div class="step">向心加速度始终指向圆心；所需向心力是指向圆心的合力效果。</div>
+          </div>
+          <div class="tab-content" id="tab-formula">
+            <div class="formula-steps">
+              <div class="step">向心加速度：$a=\\frac{v^2}{r}$</div>
+              <div class="step">向心力：$F=ma=\\frac{mv^2}{r}$</div>
+              <div class="step">周期与角速度：$T=\\frac{2\\pi r}{v}$，$\\omega=\\frac{v}{r}$。</div>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-warnings">
+            <div class="warning-item">向心力不是额外一种新力，要说明由拉力、摩擦力、重力分力等具体力提供。</div>
+            <div class="warning-item">速度方向沿切线，向心加速度方向指向圆心，两者互相垂直。</div>
+            <div class="warning-item">速度变为 2 倍时，向心力变为 4 倍，这是常见压轴考点。</div>
+          </div>
+        </div>
+      </aside>
+      <section class="right-panel">
+        <div class="controls">
+          <button class="btn" id="playPause">暂停动画</button>
+          <button class="btn btn-secondary" id="resetMotion">重置位置</button>
+          <button class="btn btn-warning" id="toggleTrail">隐藏轨迹</button>
+        </div>
+        <div class="canvas-wrapper"><canvas id="mainCanvas"></canvas></div>
+        <div class="card">
+          <div class="card-title">变式与课堂提问</div>
+          <div class="variants-grid">
+            <div class="variant-item"><strong>变式 1：速度加倍</strong>$F=mv^2/r$，向心力变为原来的 4 倍。</div>
+            <div class="variant-item"><strong>变式 2：半径加倍</strong>速度不变时，向心力变为原来的一半，周期变为 2 倍。</div>
+            <div class="variant-item"><strong>课堂提问</strong>小球速率不变，为什么还说它有加速度？</div>
+          </div>
+        </div>
+      </section>
+    </div>"""
     script = r"""
-const circleMotion = { angle: -0.8, playing: true, last: 0 };
+const circleMotion = { angle: -0.8, playing: true, last: 0, trail: true, points: [] };
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
 for (const id of ['m','r','v']) document.getElementById(id).addEventListener('input', drawCircular);
 document.getElementById('playPause').addEventListener('click', () => {
   circleMotion.playing = !circleMotion.playing;
-  document.getElementById('playPause').textContent = circleMotion.playing ? '暂停' : '播放';
+  document.getElementById('playPause').textContent = circleMotion.playing ? '暂停动画' : '播放动画';
 });
-document.getElementById('resetMotion').addEventListener('click', () => { circleMotion.angle = -0.8; drawCircular(); });
+document.getElementById('resetMotion').addEventListener('click', () => { circleMotion.angle = -0.8; circleMotion.points = []; drawCircular(); });
+document.getElementById('toggleTrail').addEventListener('click', () => {
+  circleMotion.trail = !circleMotion.trail;
+  document.getElementById('toggleTrail').textContent = circleMotion.trail ? '隐藏轨迹' : '显示轨迹';
+});
 
 function circularValues() {
   const m = +document.getElementById('m').value;
@@ -228,7 +579,44 @@ function circularValues() {
   const v = +document.getElementById('v').value;
   const F = m * v * v / r;
   const a = v * v / r;
-  return { m, r, v, F, a };
+  const T = 2 * Math.PI * r / v;
+  const omega = v / r;
+  return { m, r, v, F, a, T, omega };
+}
+
+function resizeCanvas() {
+  const wrapper = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(wrapper.clientWidth * dpr);
+  canvas.height = Math.floor(wrapper.clientHeight * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function drawArrow(x1, y1, x2, y2, color, label, width = 3) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.hypot(dx, dy);
+  if (len < 2) return;
+  const angle = Math.atan2(dy, dx);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = width;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 12 * Math.cos(angle - 0.45), y2 - 12 * Math.sin(angle - 0.45));
+  ctx.lineTo(x2 - 12 * Math.cos(angle + 0.45), y2 - 12 * Math.sin(angle + 0.45));
+  ctx.closePath();
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.font = 'bold 13px Segoe UI, Microsoft YaHei';
+  ctx.fillText(label, x2 + 6, y2 - 6);
+  ctx.restore();
 }
 
 function drawCircular() {
@@ -236,21 +624,63 @@ function drawCircular() {
   document.getElementById('mOut').textContent = `${v.m.toFixed(1)} kg`;
   document.getElementById('rOut').textContent = `${v.r.toFixed(1)} m`;
   document.getElementById('vOut').textContent = `${v.v.toFixed(1)} m/s`;
-  document.getElementById('answer').textContent = `F=${v.F.toFixed(2)}N, a=${v.a.toFixed(2)}m/s²`;
-  const cx = 360, cy = 280, rr = 95 + v.r * 28;
+  document.getElementById('resA').textContent = `${v.a.toFixed(2)} m/s²`;
+  document.getElementById('resF').textContent = `${v.F.toFixed(2)} N`;
+  document.getElementById('resT').textContent = `${v.T.toFixed(2)} s`;
+  document.getElementById('resW').textContent = `${v.omega.toFixed(2)} rad/s`;
+  document.getElementById('statusBox').textContent = `当前速度 ${v.v.toFixed(1)} m/s，向心力 ${v.F.toFixed(2)} N，由指向圆心的合力提供。`;
+  resizeCanvas();
+  const W = canvas.parentElement.clientWidth, H = canvas.parentElement.clientHeight;
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,.08)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 44) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 44) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  ctx.restore();
+  const cx = W / 2, cy = H / 2 + 10, rr = Math.min(W, H) * (0.18 + v.r / 40);
   const bx = cx + rr * Math.cos(circleMotion.angle);
   const by = cy + rr * Math.sin(circleMotion.angle);
   const tx = -Math.sin(circleMotion.angle), ty = Math.cos(circleMotion.angle);
-  document.getElementById('drawing').innerHTML = `
-    <circle cx="${cx}" cy="${cy}" r="${rr}" fill="#eef6fb" stroke="#213043" stroke-width="5"/>
-    <circle cx="${cx}" cy="${cy}" r="7" fill="#213043"/>
-    <path d="M${cx} ${cy}L${bx} ${by}" stroke="#9fb5c8" stroke-width="3" stroke-dasharray="8 8"/>
-    <circle cx="${bx}" cy="${by}" r="${14 + v.m * 3.2}" fill="#ff8b3d"/>
-    <line x1="${bx}" y1="${by}" x2="${cx + (bx - cx) * 0.48}" y2="${cy + (by - cy) * 0.48}" stroke="#2457c5" stroke-width="${Math.min(16, 5 + v.F / 8)}" stroke-linecap="round"/>
-    <line x1="${bx}" y1="${by}" x2="${bx + tx * 105}" y2="${by + ty * 105}" stroke="#1f8a70" stroke-width="7" stroke-linecap="round"/>
-    <text x="${cx + (bx - cx) * 0.58}" y="${cy + (by - cy) * 0.58}" fill="#2457c5" font-size="24" font-weight="800">F</text>
-    <text x="${bx + tx * 112}" y="${by + ty * 112}" fill="#1f8a70" font-size="24" font-weight="800">v</text>
-    <text x="92" y="58" font-size="21" fill="#62717d">小球持续转动；速度沿切线，向心合力指向圆心</text>`;
+  circleMotion.points.push([bx, by]);
+  if (circleMotion.points.length > 80) circleMotion.points.shift();
+  if (circleMotion.trail) {
+    ctx.strokeStyle = 'rgba(255,213,79,.45)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    circleMotion.points.forEach(([x, y], i) => { if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+    ctx.stroke();
+  }
+  ctx.strokeStyle = 'rgba(100,181,246,.55)';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.setLineDash([8, 6]);
+  ctx.strokeStyle = 'rgba(255,255,255,.28)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(bx, by);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#e8edf6';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffb74d';
+  ctx.shadowColor = '#ffb74d';
+  ctx.shadowBlur = 16;
+  ctx.beginPath();
+  ctx.arc(bx, by, 14 + v.m * 2.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  drawArrow(bx, by, bx + tx * 110, by + ty * 110, '#66bb6a', 'v');
+  drawArrow(bx, by, bx + (cx - bx) * 0.52, by + (cy - by) * 0.52, '#64b5f6', 'a/F', Math.min(9, 3 + v.F / 18));
+  ctx.fillStyle = '#9aa7b8';
+  ctx.font = '13px Segoe UI, Microsoft YaHei';
+  ctx.fillText(`r = ${v.r.toFixed(1)} m`, cx + (bx - cx) * 0.5 + 8, cy + (by - cy) * 0.5 - 8);
+  ctx.fillText('速度沿切线，向心加速度指向圆心', 22, 32);
 }
 
 function animateCircular(now) {
@@ -265,6 +695,12 @@ function animateCircular(now) {
 
 drawCircular();
 requestAnimationFrame(animateCircular);
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick').includes("'" + name + "'")));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+  if (window.MathJax) MathJax.typesetPromise();
+}
 """
     return page("圆周运动互动题页", body, script)
 
