@@ -140,3 +140,14 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 ## 许可证
 
 MIT。见 [LICENSE](LICENSE)。
+
+## 小学竖式动画（预览）
+
+新增 `elementary-arithmetic-animation`：输入两个 0—9999 的整数，演示加减乘除、连续进位、跨零退位、部分积与长除法。支持逐步播放、倒退、速度调整与离线使用。减法结果非负，除法输出商和余数。
+
+```bash
+python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.py --a 1000 --b 586 --op '-' --output examples/elementary-arithmetic.html
+node tests/arithmetic.test.cjs
+```
+
+打开 [预览页面](examples/elementary-arithmetic.html)。[立项与引擎选型](docs/elementary-arithmetic-project.zh-CN.md)。动画使用 GSAP，其许可独立于仓库 MIT 许可，见 [第三方说明](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md)。

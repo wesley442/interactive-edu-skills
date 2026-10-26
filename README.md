@@ -140,3 +140,14 @@ Mechanics skill (`high-school-interactive-mechanics`):
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Elementary arithmetic animation (preview)
+
+`elementary-arithmetic-animation` generates a fully offline Chinese HTML lesson for column addition, subtraction, multiplication and long division. Supports integers 0–9999, non-negative subtraction results, and quotient/remainder division, with step controls and adjustable playback.
+
+```bash
+python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.py --a 278 --b 156 --op '+' --output examples/elementary-arithmetic.html
+node tests/arithmetic.test.cjs
+```
+
+See the [preview](examples/elementary-arithmetic.html), [project design](docs/elementary-arithmetic-project.zh-CN.md), and [GSAP third-party license notice](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md).

@@ -1,0 +1,4 @@
+interface:
+  display_name: "小学竖式动画"
+  short_description: "输入两个整数，逐步观看加减乘除的竖式计算"
+  default_prompt: "使用 $elementary-arithmetic-animation 生成小学数学竖式分解动画，展示进退位和每一步计算，输出可离线打开的 HTML。"
