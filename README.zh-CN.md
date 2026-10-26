@@ -19,6 +19,7 @@
 |---|---|---|
 | `interactive-geometry` | 几何题生成、MathJax 解析、2D/3D 可视化讲解设计 | 自包含 HTML 几何讲解页 |
 | `high-school-interactive-mechanics` | 高中力学、受力图、可调变量、运动动画 | 自包含 HTML 力学模拟页 |
+| `elementary-arithmetic-animation` | 小学数学竖式加减乘除、进退位、积木拆合动画 | 自包含离线 HTML 竖式教学页 |
 
 ## 仓库结构
 
@@ -29,11 +30,17 @@ interactive-edu-skills/
 │   │   ├── SKILL.md
 │   │   ├── assets/
 │   │   └── scripts/
-│   └── high-school-interactive-mechanics/
+│   ├── high-school-interactive-mechanics/
+│   │   ├── SKILL.md
+│   │   ├── assets/
+│   │   ├── references/
+│   │   └── scripts/
+│   └── elementary-arithmetic-animation/
 │       ├── SKILL.md
+│       ├── agents/
 │       ├── assets/
-│       ├── references/
-│       └── scripts/
+│       ├── scripts/
+│       └── templates/
 ├── docs/
 │   ├── adding-a-skill.md
 │   └── installation.md
@@ -48,6 +55,7 @@ interactive-edu-skills/
 mkdir -p ~/.codex/skills
 ln -s "$(pwd)/skills/interactive-geometry" ~/.codex/skills/interactive-geometry
 ln -s "$(pwd)/skills/high-school-interactive-mechanics" ~/.codex/skills/high-school-interactive-mechanics
+ln -s "$(pwd)/skills/elementary-arithmetic-animation" ~/.codex/skills/elementary-arithmetic-animation
 ```
 
 安装后，可以这样向本地模型或 agent 提问：
@@ -58,6 +66,10 @@ ln -s "$(pwd)/skills/high-school-interactive-mechanics" ~/.codex/skills/high-sch
 
 ```text
 使用 interactive-geometry skill，生成一个正四棱锥线面角的互动几何讲解页。
+```
+
+```text
+使用 elementary-arithmetic-animation skill，生成 1000−586 的竖式教学页面，逐步展示跨零退位和积木拆分。
 ```
 
 Claude-compatible 的打包方式和脚本直用方式见 [docs/installation.md](docs/installation.md)。
@@ -84,6 +96,14 @@ Claude-compatible 的打包方式和脚本直用方式见 [docs/installation.md]
 | `spring-energy` | 弹簧能量转化 | `examples/spring-energy.html` |
 | `connected-bodies` | 连接体、绳子拉力与摩擦力 | `examples/connected-bodies.html` |
 
+当前小学数学竖式计算模板：
+
+| Template | 主题 | 示例文件 |
+|---|---|---|
+| `elementary-arithmetic` | 竖式加减乘除、连续进位、跨零退位、部分积与长除法 | `examples/elementary-arithmetic.html` |
+
+通过 `--a`、`--b` 和 `--op` 设置算式；页面内也可换题。支持 0—9999 的整数，减法结果非负，除法输出商和余数。加减法提供积木拆合演示，支持手机操作、分步播放、倒退和倍速，生成文件可离线使用。
+
 生成单个模板：
 
 ```bash
@@ -98,6 +118,12 @@ python3 skills/interactive-geometry/scripts/generate_geometry_html.py \
   --output examples/cube-distance.html
 ```
 
+```bash
+python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.py \
+  --a 1000 --b 586 --op '-' \
+  --output examples/elementary-arithmetic.html
+```
+
 重新生成全部内置示例：
 
 ```bash
@@ -110,7 +136,17 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template circular --output examples/circular-motion.html
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template spring-energy --output examples/spring-energy.html
 python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html.py --template connected-bodies --output examples/connected-bodies.html
+
+python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.py --a 278 --b 156 --op '+' --output examples/elementary-arithmetic.html
 ```
+
+验证小学数学计算逻辑：
+
+```bash
+node tests/arithmetic.test.cjs
+```
+
+[小学数学立项与引擎选型](docs/elementary-arithmetic-project.zh-CN.md)。
 
 在线预览参考页面效果：
 
@@ -128,6 +164,10 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 - [弹簧能量互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/spring-energy.html)
 - [连接体互动模拟](https://wesley442.github.io/interactive-edu-skills/examples/connected-bodies.html)
 
+小学数学 Skill（`elementary-arithmetic-animation`）：
+
+- [小学数学竖式计算动画（加减乘除与积木演示）](https://wesley442.github.io/interactive-edu-skills/examples/elementary-arithmetic.html)
+
 ## 路线图
 
 - 增加更多力学模板：滑轮系统、碰撞与动量、圆周临界问题。
@@ -141,13 +181,4 @@ python3 skills/high-school-interactive-mechanics/scripts/generate_mechanics_html
 
 MIT。见 [LICENSE](LICENSE)。
 
-## 小学竖式动画（预览）
-
-新增 `elementary-arithmetic-animation`：输入两个 0—9999 的整数，演示加减乘除、连续进位、跨零退位、部分积与长除法。支持逐步播放、倒退、速度调整与离线使用。减法结果非负，除法输出商和余数。
-
-```bash
-python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.py --a 1000 --b 586 --op '-' --output examples/elementary-arithmetic.html
-node tests/arithmetic.test.cjs
-```
-
-打开 [预览页面](https://wesley442.github.io/interactive-edu-skills/examples/elementary-arithmetic.html)。[立项与引擎选型](docs/elementary-arithmetic-project.zh-CN.md)。动画使用 GSAP，其许可独立于仓库 MIT 许可，见 [第三方说明](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md)。
+小学数学动画使用的 GSAP 遵循其独立许可，见 [第三方许可说明](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md)。
