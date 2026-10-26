@@ -150,4 +150,4 @@ python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.
 node tests/arithmetic.test.cjs
 ```
 
-打开 [预览页面](examples/elementary-arithmetic.html)。[立项与引擎选型](docs/elementary-arithmetic-project.zh-CN.md)。动画使用 GSAP，其许可独立于仓库 MIT 许可，见 [第三方说明](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md)。
+打开 [预览页面](https://wesley442.github.io/interactive-edu-skills/examples/elementary-arithmetic.html)。[立项与引擎选型](docs/elementary-arithmetic-project.zh-CN.md)。动画使用 GSAP，其许可独立于仓库 MIT 许可，见 [第三方说明](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md)。

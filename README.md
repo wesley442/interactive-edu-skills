@@ -150,4 +150,4 @@ python3 skills/elementary-arithmetic-animation/scripts/generate_arithmetic_html.
 node tests/arithmetic.test.cjs
 ```
 
-See the [preview](examples/elementary-arithmetic.html), [project design](docs/elementary-arithmetic-project.zh-CN.md), and [GSAP third-party license notice](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md).
+See the [preview](https://wesley442.github.io/interactive-edu-skills/examples/elementary-arithmetic.html), [project design](docs/elementary-arithmetic-project.zh-CN.md), and [GSAP third-party license notice](skills/elementary-arithmetic-animation/assets/THIRD_PARTY.md).
